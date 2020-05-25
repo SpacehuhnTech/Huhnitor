@@ -18,9 +18,12 @@ fn auto_serial() -> Option<String> {
                 for path in paths {
                     if !original.contains(&path) {
                         return Some(path.port_name)
-            }   }   }
+                    }   
+                }   
+            }
             sleep(Duration::from_millis(1000));
-    }   } else {
+        }   
+    } else {
         println!("Couldn't access serial ports!");
     }
     None
@@ -91,7 +94,10 @@ async fn main() {
                 Some(text_to_send) = reciever.next() => {
                     if port.write(text_to_send.as_bytes()).await.is_err() {
                         println!("[SEND ERR]");
-        }   }   }   }
+                    }   
+                }   
+            }   
+        }
     } else {
         println!("No valid serial port found!");
     }
