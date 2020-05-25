@@ -82,6 +82,7 @@ async fn main() {
         let (sender, mut reciever) = tokio::sync::mpsc::unbounded_channel();
         tokio::spawn(input::input_receiver(sender));
         let mut buf = Vec::new();
+        println!("Connected!");
 
         loop {
             tokio::select! {
