@@ -80,7 +80,7 @@ async fn main() {
         let mut port = BufReader::new(port);
 
         let (sender, mut reciever) = tokio::sync::mpsc::unbounded_channel();
-        tokio::spawn(input::input_receiver(sender));
+        tokio::spawn(input::receiver(sender));
         let mut buf = Vec::new();
         println!("Connected!");
 
