@@ -3,13 +3,16 @@ use std::io::stdin;
 use std::thread::sleep;
 use std::time::Duration;
 
+use crate::output;
+
 pub fn manual() -> Option<String> {
     let available = available_ports().ok()?;
-    print!("Your available ports are: ");
+
+    output::print_ports();
+
     for port in available.iter() {
-        print!("{} ", port.port_name);
+        output::print_port(&port.port_name);
     }
-    println!();
 
     let mut port = String::new();
     stdin().read_line(&mut port).ok()?;
@@ -20,7 +23,8 @@ pub fn manual() -> Option<String> {
 
 pub fn auto() -> Option<String> {
     if let Ok(original) = available_ports() {
-        println!("Plug in your device...");
+        output::print_plug_in();
+
         for _ in 0..30 {
             if let Ok(paths) = available_ports() {
                 for path in paths {
@@ -32,7 +36,8 @@ pub fn auto() -> Option<String> {
             sleep(Duration::from_millis(1000));
         }
     } else {
-        println!("Couldn't access serial ports!");
+        output::print_no_access();
     }
+
     None
 }
