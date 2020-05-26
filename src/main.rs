@@ -71,6 +71,7 @@ async fn main() {
     };
 
     if let Some(inner_tty_path) = tty_path {
+        #[allow(unused_mut)] // Ignore warning from windows compilers
         let mut port = tokio_serial::Serial::from_path(inner_tty_path, &settings).unwrap();
 
         #[cfg(unix)]
