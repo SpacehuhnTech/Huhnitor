@@ -88,7 +88,7 @@ async fn main() {
             tokio::select! {
                 len = port.read_until(b'\n', &mut buf) => match len {
                     Ok(0) => break, // EOF
-                    Ok(_) => println!("{}", String::from_utf8_lossy(&buf)),
+                    Ok(_) => { print!("{}", String::from_utf8_lossy(&buf)); buf = Vec::new(); },
                     Err(e) => { eprintln!("[ERR] {}", e); break; }
                 },
 
