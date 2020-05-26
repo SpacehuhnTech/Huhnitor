@@ -1,12 +1,12 @@
-use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
-use serialport::prelude::*;
-use serialport::available_ports;
 use futures::stream::StreamExt;
+use serialport::available_ports;
+use serialport::prelude::*;
+use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 
-use std::time::Duration;
-use std::thread::sleep;
-use std::io::stdin;
 use std::env;
+use std::io::stdin;
+use std::thread::sleep;
+use std::time::Duration;
 
 mod input;
 
@@ -17,12 +17,12 @@ fn auto_serial() -> Option<String> {
             if let Ok(paths) = available_ports() {
                 for path in paths {
                     if !original.contains(&path) {
-                        return Some(path.port_name)
-                    }   
-                }   
+                        return Some(path.port_name);
+                    }
+                }
             }
             sleep(Duration::from_millis(1000));
-        }   
+        }
     } else {
         println!("Couldn't access serial ports!");
     }
@@ -67,7 +67,7 @@ async fn main() {
         flow_control: FlowControl::None,
         parity: Parity::None,
         stop_bits: StopBits::One,
-        timeout: Duration::from_secs(10)
+        timeout: Duration::from_secs(10),
     };
 
     if let Some(inner_tty_path) = tty_path {
@@ -96,9 +96,9 @@ async fn main() {
                 Some(text_to_send) = reciever.next() => {
                     if port.write(text_to_send.as_bytes()).await.is_err() {
                         println!("[SEND ERR]");
-                    }   
-                }   
-            }   
+                    }
+                }
+            }
         }
     } else {
         println!("No valid serial port found!");
