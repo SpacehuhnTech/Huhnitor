@@ -27,3 +27,7 @@ pub fn print_input(input: &Vec<u8>) {
     let input_str = String::from_utf8_lossy(input);
     print!("{}", input_str);
 }
+
+pub fn error(e: &str) {
+    eprintln!("[Error] {}", e);
+}

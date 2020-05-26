@@ -56,19 +56,19 @@ async fn main() {
                         buf = Vec::new();
                     },
                     Err(e) => {
-                        eprintln!("[ERR] {}", e);
+                        output::error(&e.to_string());
                         break;
                     }
                 },
 
                 Some(text_to_send) = reciever.next() => {
                     if port.write(text_to_send.as_bytes()).await.is_err() {
-                        println!("[SEND ERR]");
+                        output::error("Couldn't send message");
                     }
                 }
             }
         }
     } else {
-        println!("No valid serial port found!");
+        output::error("No valid serial port found!");
     }
 }
