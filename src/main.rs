@@ -1,48 +1,11 @@
 use futures::stream::StreamExt;
-use serialport::available_ports;
 use serialport::prelude::*;
+use std::env;
+use std::time::Duration;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 
-use std::env;
-use std::io::stdin;
-use std::thread::sleep;
-use std::time::Duration;
-
 mod input;
-
-fn auto_serial() -> Option<String> {
-    if let Ok(original) = available_ports() {
-        println!("Plug in your device...");
-        for _ in 0..30 {
-            if let Ok(paths) = available_ports() {
-                for path in paths {
-                    if !original.contains(&path) {
-                        return Some(path.port_name);
-                    }
-                }
-            }
-            sleep(Duration::from_millis(1000));
-        }
-    } else {
-        println!("Couldn't access serial ports!");
-    }
-    None
-}
-
-fn manual_serial() -> Option<String> {
-    let available = available_ports().ok()?;
-    print!("Your available ports are: ");
-    for port in available.iter() {
-        print!("{} ", port.port_name);
-    }
-    println!();
-
-    let mut port = String::new();
-    stdin().read_line(&mut port).ok()?;
-    port = port.trim().to_string();
-
-    Some(port)
-}
+mod port;
 
 #[tokio::main]
 async fn main() {
@@ -53,11 +16,9 @@ async fn main() {
     println!("{}", String::from_utf8_lossy(c_bytes));
 
     let tty_path = if args.iter().any(|arg| arg == "-s") {
-        // Manual serial input
-        manual_serial()
+        port::manual()
     } else {
-        // Detect serial device when plugged in
-        auto_serial()
+        port::auto()
     };
 
     // Define settings (support for changing planned)
