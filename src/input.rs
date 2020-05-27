@@ -8,3 +8,13 @@ pub async fn receiver(sender: tokio::sync::mpsc::UnboundedSender<String>) {
         }
     }
 }
+
+pub fn read_line() -> String {
+    let mut val = String::new();
+
+    io::stdin()
+        .read_line(&mut val)
+        .expect("Failed to read line");
+
+    val.trim().to_string()
+}

@@ -1,8 +1,8 @@
 use serialport::available_ports;
-use std::io::stdin;
 use std::thread::sleep;
 use std::time::Duration;
 
+use crate::input;
 use crate::output;
 
 pub fn manual() -> Option<String> {
@@ -10,9 +10,7 @@ pub fn manual() -> Option<String> {
 
     output::print_ports(&available);
 
-    let mut port = String::new();
-    stdin().read_line(&mut port).ok()?;
-    port = port.trim().to_string();
+    let port = input::read_line();
 
     Some(port)
 }
