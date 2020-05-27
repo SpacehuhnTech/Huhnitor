@@ -15,6 +15,9 @@ The Huhnitor is designed to be as easy to use as possible:
 3. Plug in your deauther
 4. Have fun using the command line interface of the [ESP8266 Deauther](https://github.com/SpacehuhnTech/esp8266_deauther) :slightly_smiling_face:
 
+If you wouldn't like to use the automatic method of determining the correct serial port, use the argument `--no-auto` when starting
+The Huhnitor to pick manually.
+
 ## Drivers
 
 Your deauther is not detected when plugged in? 

@@ -15,7 +15,7 @@ async fn main() {
 
     output::print_logo();
 
-    let tty_path = if args.iter().any(|arg| arg == "-s") {
+    let tty_path = if args.iter().any(|arg| arg == "--no-auto") {
         port::manual()
     } else {
         port::auto()
