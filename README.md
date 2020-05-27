@@ -2,6 +2,8 @@
 
 An intergalactic serial monitor for the [ESP8266 Deauther](https://github.com/SpacehuhnTech/esp8266_deauther).
 
+![Huhnitor Logo](img/logo.png)
+
 ## Usage
 
 The Huhnitor is designed to be as easy to use as possible:  
