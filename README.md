@@ -16,13 +16,13 @@ The Huhnitor is designed to be as easy to use as possible:
 ## Drivers
 
 Your deauther is not detected when plugged in? 
-Depending on the serial chip that is used on the ESP8266 development board you have, you might need to install the right driver.  
+Depending on the serial chip that is used on the ESP8266 development board you have, you might need to install the right driver:  
 
 * [CP210x](https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers)
 * [CH341](http://www.wch-ic.com/search?q=cH341&t=downloads)
 * [FTDI](https://www.ftdichip.com/FTDrivers.htm)
 
-Most ESP8266 based development boards use a chip from the CP210x family.   
+Not sure which one to install? A lot of ESP8266 based development boards use a chip from the CP210x family, try starting there.   
 
 ## Compiling
 
@@ -35,7 +35,8 @@ But if you want, you can compile the Huhnitor yourself:
 
 ## Credits
 
-Made with :heart: by [Jamz](https://github.com/the-Jamz) in cooperation with [Spacehuhn Technologies](https://github.com/SpacehuhnTech/).  
+Made with :heart: by [Jamz](https://github.com/the-Jamz)   
+in cooperation with [Spacehuhn Technologies](https://github.com/SpacehuhnTech/)
 
 ## License
 
