@@ -1,8 +1,10 @@
 # Huhnitor
 
-An intergalactic serial monitor for the [ESP8266 Deauther](https://github.com/SpacehuhnTech/esp8266_deauther).
-
-![Huhnitor Logo](img/logo.png)
+<p align="center">
+  <img alt="Huhnitor Logo" src="img/logo.png" width="200">
+  <br>
+  An intergalactic serial monitor for the <a href="https://github.com/SpacehuhnTech/esp8266_deauther">ESP8266 Deauther</a>
+</p>
 
 ## Usage
 
