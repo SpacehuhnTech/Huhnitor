@@ -8,11 +8,7 @@ use crate::output;
 pub fn manual() -> Option<String> {
     let available = available_ports().ok()?;
 
-    output::print_ports();
-
-    for port in available.iter() {
-        output::print_port(&port.port_name);
-    }
+    output::print_ports(&available);
 
     let mut port = String::new();
     stdin().read_line(&mut port).ok()?;

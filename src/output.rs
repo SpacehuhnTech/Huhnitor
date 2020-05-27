@@ -3,12 +3,16 @@ pub fn print_logo() {
     println!("{}", String::from_utf8_lossy(c_bytes));
 }
 
-pub fn print_ports() {
-    print!("Your available ports are: ");
-}
+pub fn print_ports(ports: &std::vec::Vec<serialport::SerialPortInfo>) {
+    if ports.len() == 0 {
+        println!("No serial devices found :(");
+    } else {
+        println!("Your available serial ports are: ");
 
-pub fn print_port(port_name: &String) {
-    println!("{}", port_name);
+        for (id, port) in ports.iter().enumerate() {
+            println!("[{}] {}", id, port.port_name);
+        }
+    }
 }
 
 pub fn print_plug_in() {
