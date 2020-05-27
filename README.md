@@ -37,7 +37,7 @@ But if you want, you can compile the Huhnitor yourself:
 
 ## Credits
 
-Made with :heart: by [Jamz](https://github.com/the-Jamz)   
+Made with :heart: by [Jamz](https://github.com/the-Jamz) with help from [Selicre](https://selic.re)
 in cooperation with [Spacehuhn Technologies](https://github.com/SpacehuhnTech/)
 
 ## License
