@@ -4,6 +4,7 @@ use std::env;
 use std::time::Duration;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 
+#[macro_use]
 mod input;
 mod output;
 mod port;
@@ -56,19 +57,19 @@ async fn main() {
                         buf = Vec::new();
                     },
                     Err(e) => {
-                        output::error(&e.to_string());
+                        error!(e);
                         break;
                     }
                 },
 
                 Some(text_to_send) = reciever.next() => {
                     if port.write(text_to_send.as_bytes()).await.is_err() {
-                        output::error("Couldn't send message");
+                        error!("Couldn't send message");
                     }
                 }
             }
         }
     } else {
-        output::error("No valid serial port found!");
+        error!("No valid serial port found!");
     }
 }

@@ -28,6 +28,9 @@ pub fn print_input(input: &Vec<u8>) {
     print!("{}", input_str);
 }
 
-pub fn error(e: &str) {
-    eprintln!("[Error] {}", e);
+#[macro_export]
+macro_rules! error {
+    ($expression:expr) => {
+        eprintln!("[Error] {}", $expression);
+    };
 }
