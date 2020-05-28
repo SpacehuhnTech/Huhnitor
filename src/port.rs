@@ -6,13 +6,23 @@ use crate::input;
 use crate::output;
 
 pub fn manual() -> Option<String> {
-    let available = available_ports().ok()?;
+    let mut available = available_ports().ok()?;
 
     output::print_ports(&available);
 
     let port = input::read_line();
 
-    Some(port)
+    if port.to_lowercase().contains("dev/") || port.to_lowercase().contains("com") {
+        Some(port)
+    } else {
+        let index = port.parse().ok()?;
+
+        if index < available.len() {
+            Some(available.remove(index).port_name)
+        } else {
+            None
+        }
+    }
 }
 
 pub fn auto() -> Option<String> {
