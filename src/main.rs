@@ -70,8 +70,6 @@ async fn main() {
             }
         }
     } else {
-        error!("No valid serial port found!");
-        println!("Having problems connecting? Try installing drivers from:");
-        println!("https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers");
+        output::print_no_serial_port()();
     }
 }

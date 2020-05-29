@@ -1,3 +1,10 @@
+#[macro_export]
+macro_rules! error {
+    ($expression:expr) => {
+        eprintln!("[Error] {}", $expression);
+    };
+}
+
 pub fn print_logo() {
     let c_bytes = include_bytes!("visual/chicken.txt");
     println!("{}", String::from_utf8_lossy(c_bytes));
@@ -32,9 +39,8 @@ pub fn print_input(input: &Vec<u8>) {
     print!("{}", input_str);
 }
 
-#[macro_export]
-macro_rules! error {
-    ($expression:expr) => {
-        eprintln!("[Error] {}", $expression);
-    };
+pub fn print_no_serial_port() {
+    error!("No serial port found :(");
+    println!("Make sure the USB connection works and necessary drivers are installed:");
+    println!("https://github.com/SpacehuhnTech/Huhnitor#drivers");
 }

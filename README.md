@@ -17,7 +17,8 @@ The Huhnitor is designed to be as easy to use as possible:
 
 ## Drivers
 
-Your deauther is not detected when plugged in? 
+Your deauther is not detected when plugged in?  
+**Make sure the USB connection is working. Some cables can only charge but not transmit data.**  
 Depending on the serial chip that is used on the ESP8266 development board you have, you might need to install the right driver:  
 
 * [CP210x](https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers)
