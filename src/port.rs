@@ -26,18 +26,21 @@ pub fn manual() -> Option<String> {
 }
 
 pub fn auto() -> Option<String> {
-    if let Ok(original) = available_ports() {
+    if let Ok(mut ports) = available_ports() {
         output::print_plug_in();
 
-        for _ in 0..30 {
-            if let Ok(paths) = available_ports() {
-                for path in paths {
-                    if !original.contains(&path) {
-                        return Some(path.port_name);
+        loop {
+            sleep(Duration::from_millis(500));
+
+            if let Ok(new_ports) = available_ports() {
+                for path in &new_ports {
+                    if !ports.contains(&path) {
+                        return Some(path.port_name.clone());
                     }
                 }
+
+                ports = new_ports;
             }
-            sleep(Duration::from_millis(1000));
         }
     } else {
         output::print_no_access();
