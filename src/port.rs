@@ -27,6 +27,7 @@ pub fn manual() -> Option<String> {
 
 pub fn auto() -> Option<String> {
     if let Ok(mut ports) = available_ports() {
+        output::print_ports(&ports);
         output::print_plug_in();
 
         loop {

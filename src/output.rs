@@ -23,8 +23,9 @@ pub fn print_no_access() {
     println!("Couldn't access serial ports!");
 }
 
-pub fn print_connected() {
-    println!("Connected!");
+pub fn print_connected(port: String) {
+    println!("Connected to {} \\o/", port);
+    println!("=================================================================================")
 }
 
 pub fn print_input(input: &Vec<u8>) {
