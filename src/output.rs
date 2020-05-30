@@ -69,6 +69,9 @@ pub fn print_input(input: &Vec<u8>) {
     let input_str = String::from_utf8_lossy(input);
     print!("{}", input_str);
 }
+pub fn clear() {
+    println!("{esc}[2J{esc}[1;1H", esc = 27 as char);
+}
 
 #[macro_export]
 macro_rules! error {
