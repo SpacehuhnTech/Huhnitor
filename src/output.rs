@@ -23,7 +23,7 @@ pub fn print_no_access() {
     println!("Couldn't access serial ports!");
 }
 
-pub fn print_connected(port: String) {
+pub fn print_connected(port: &str) {
     println!("Connected to {} \\o/", port);
     println!("=================================================================================")
 }
