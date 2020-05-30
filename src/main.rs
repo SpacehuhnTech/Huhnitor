@@ -15,6 +15,8 @@ async fn main() {
 
     output::print_logo();
 
+    let colors_enabled = !args.iter().any(|arg| arg == "--no-color");
+
     let tty_path = if args.iter().any(|arg| arg == "-s") {
         port::manual()
     } else {
@@ -53,7 +55,7 @@ async fn main() {
                             break;
                         },
                         Ok(_) => {
-                            output::print_input(&buf);
+                            output::print_input(&buf, colors_enabled);
                             buf = Vec::new();
                         },
                         Err(e) => {

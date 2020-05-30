@@ -65,10 +65,16 @@ pub fn print_connected() {
     println!("Connected!");
 }
 
-pub fn print_input(input: &Vec<u8>) {
+pub fn print_input(input: &Vec<u8>, color: bool) {
     let input_str = String::from_utf8_lossy(input);
-    print!("{}", input_str);
+
+    if color {
+        printc(&input_str);
+    } else {
+        print!("{}", input_str);
+    }
 }
+
 pub fn clear() {
     println!("{esc}[2J{esc}[1;1H", esc = 27 as char);
 }
