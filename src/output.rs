@@ -1,3 +1,37 @@
+use colored::*;
+use regex::Regex;
+
+fn printc(s: &str) {
+    let user_input = Regex::new(r"^# ").unwrap();
+    let divider = Regex::new(r"(?m)^\s*(-|=|#)+\s*$").unwrap();
+    let headline = Regex::new(r"^\[ =+ .* =+ \]").unwrap();
+    let note = Regex::new(r"^> \w+").unwrap();
+    let error = Regex::new(r"^(ERROR)|(WARNING): ").unwrap();
+    let option = Regex::new(r"^ {0,4}-?\S+.*: +\w+.*").unwrap();
+    let default = Regex::new(r"^\[.*\]").unwrap();
+    let command = Regex::new(r"(?m)^\S+( \[?-\S*( <\S*>)?\]?)*\s*$").unwrap();
+
+    if user_input.is_match(s) {
+        print!("{}", s.white().bold());
+    } else if divider.is_match(s) {
+        print!("{}", s.blue());
+    } else if headline.is_match(s) {
+        print!("{}", s.yellow().bold());
+    } else if note.is_match(s) {
+        print!("{}", s.cyan());
+    } else if error.is_match(s) {
+        print!("{}", s.red());
+    } else if option.is_match(s) {
+        print!("{}", s.green());
+    } else if default.is_match(s) {
+        print!("{}", s.green().bold());
+    } else if command.is_match(s) {
+        print!("{}", s.yellow());
+    } else {
+        print!("{}", s.white());
+    }
+}
+
 pub fn print_logo() {
     let c_bytes = include_bytes!("visual/chicken.txt");
     println!("{}", String::from_utf8_lossy(c_bytes));
