@@ -32,44 +32,47 @@ async fn main() {
 
     if let Some(inner_tty_path) = tty_path {
         #[allow(unused_mut)] // Ignore warning from windows compilers
-        let mut port = tokio_serial::Serial::from_path(inner_tty_path, &settings).unwrap();
+        if let Ok(mut port) = tokio_serial::Serial::from_path(inner_tty_path, &settings) {
 
-        #[cfg(unix)]
-        port.set_exclusive(false)
-            .expect("Unable to set serial port exclusive to false");
+            #[cfg(unix)]
+            port.set_exclusive(false)
+                .expect("Unable to set serial port exclusive to false");
 
-        let mut port = BufReader::new(port);
+            let mut port = BufReader::new(port);
 
-        let (sender, mut reciever) = tokio::sync::mpsc::unbounded_channel();
-        tokio::spawn(input::receiver(sender));
+            let (sender, mut reciever) = tokio::sync::mpsc::unbounded_channel();
+            tokio::spawn(input::receiver(sender));
 
-        output::print_connected();
+            output::print_connected();
 
-        let mut buf = Vec::new();
-        loop {
-            tokio::select! {
-                len = port.read_until(b'\n', &mut buf) => match len {
-                    Ok(0) => { // EOF
-                        break;
+            let mut buf = Vec::new();
+            loop {
+                tokio::select! {
+                    len = port.read_until(b'\n', &mut buf) => match len {
+                        Ok(0) => { // EOF
+                            break;
+                        },
+                        Ok(_) => {
+                            output::print_input(&buf);
+                            buf = Vec::new();
+                        },
+                        Err(e) => {
+                            error!(e);
+                            break;
+                        }
                     },
-                    Ok(_) => {
-                        output::print_input(&buf);
-                        buf = Vec::new();
-                    },
-                    Err(e) => {
-                        error!(e);
-                        break;
-                    }
-                },
 
-                Some(text_to_send) = reciever.next() => {
-                    if port.write(text_to_send.as_bytes()).await.is_err() {
-                        error!("Couldn't send message");
+                    Some(text_to_send) = reciever.next() => {
+                        if port.write(text_to_send.as_bytes()).await.is_err() {
+                            error!("Couldn't send message");
+                        }
                     }
                 }
             }
+        } else { // Port handler
+            error!("Couldn't open serial port!");
         }
-    } else {
+    } else { // Path handler
         error!("No valid serial port found!");
     }
 }
