@@ -35,6 +35,10 @@ fn printc(s: &str) {
 pub fn print_logo() {
     let c_bytes = include_bytes!("visual/chicken.txt");
     println!("{}", String::from_utf8_lossy(c_bytes));
+
+    let version_str = format!(" {} Version {} ", "Huhnitor", env!("CARGO_PKG_VERSION"));
+    let headline = format!("[ {:=^76} ]", version_str);
+    println!("{}", headline);
 }
 
 pub fn print_ports(ports: &std::vec::Vec<serialport::SerialPortInfo>) {
