@@ -45,13 +45,7 @@ pub async fn auto(receiver: &mut UnboundedReceiver<String>) -> Option<String> {
     output::print_plug_in();
 
     tokio::select! {
-        port = detect_port(&mut ports) => {
-            if port.is_some() {
-                return port;
-            } else {
-                return None;
-            }
-        },
+        port = detect_port(&mut ports) => port,
 
         Some(port) = receiver.recv() => { 
             if port.to_lowercase().contains("dev/") || port.to_lowercase().contains("com") {
