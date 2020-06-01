@@ -4,6 +4,8 @@
   <img alt="Huhnitor Logo" src="img/logo.png" width="200">
   <br>
   An intergalactic serial monitor for the <a href="https://github.com/SpacehuhnTech/esp8266_deauther">ESP8266 Deauther</a>
+  <br>
+  <img src="https://github.com/SpacehuhnTech/Huhnitor/workflows/Rust/badge.svg?branch=master" alt="Rust badge">
 </p>
 
 ## Usage
