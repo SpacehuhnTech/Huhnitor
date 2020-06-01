@@ -84,6 +84,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Update APT
+      run: sudo apt-get update
     - name: Install libdev
       run: sudo apt-get install -y libudev-dev
     - name: Build
