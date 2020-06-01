@@ -1,6 +1,7 @@
 use serialport::{available_ports, SerialPortInfo};
 use tokio::sync::mpsc::UnboundedReceiver;
 
+use crate::input;
 use crate::output;
 
 pub async fn manual(receiver: &mut UnboundedReceiver<String>) -> Option<String> {
@@ -8,7 +9,7 @@ pub async fn manual(receiver: &mut UnboundedReceiver<String>) -> Option<String> 
 
     output::print_ports(&available);
 
-    let port = receiver.recv().await?.trim().to_string();
+    let port = input::read_line(receiver).await?;
 
     if port.to_lowercase().contains("dev/") || port.to_lowercase().contains("com") {
         Some(port)
@@ -47,11 +48,11 @@ pub async fn auto(receiver: &mut UnboundedReceiver<String>) -> Option<String> {
     tokio::select! {
         port = detect_port(&mut ports) => port,
 
-        Some(port) = receiver.recv() => {
+        Some(port) = input::read_line(receiver) => {
             if port.to_lowercase().contains("dev/") || port.to_lowercase().contains("com") {
-                Some(port.trim().to_string())
+                Some(port)
             } else {
-                let index = port.trim().parse().ok()?;
+                let index = port.parse().ok()?;
 
                 if index < ports.len() {
                     Some(ports.remove(index).port_name)
