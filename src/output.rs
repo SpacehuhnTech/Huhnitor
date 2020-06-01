@@ -16,12 +16,13 @@ pub fn print_ports(ports: &std::vec::Vec<serialport::SerialPortInfo>) {
 }
 
 pub fn print_plug_in() {
-    println!("Plug in your device, enter a path, or enter an index...");
+    println!("Connect your Deauther or enter the port number/name");
 }
 
 pub fn print_connected(port: &str) {
+    println!("=================================================================================");
     println!("Connected to {} \\o/", port);
-    println!("=================================================================================")
+    println!("=================================================================================");
 }
 
 pub fn print_input(input: &Vec<u8>) {
