@@ -4,27 +4,7 @@ use tokio::sync::mpsc::UnboundedReceiver;
 use crate::input;
 use crate::output;
 
-pub async fn manual(receiver: &mut UnboundedReceiver<String>) -> Option<String> {
-    let mut available = available_ports().ok()?;
-
-    output::print_ports(&available);
-
-    let port = input::read_line(receiver).await?;
-
-    if port.to_lowercase().contains("dev/") || port.to_lowercase().contains("com") {
-        Some(port)
-    } else {
-        let index = port.parse().ok()?;
-
-        if index < available.len() {
-            Some(available.remove(index).port_name)
-        } else {
-            None
-        }
-    }
-}
-
-pub async fn detect_port(ports: &mut Vec<SerialPortInfo>) -> Option<String> {
+async fn detect_port(ports: &mut Vec<SerialPortInfo>) -> Option<String> {
     loop {
         tokio::time::delay_for(std::time::Duration::from_millis(500)).await;
 
@@ -36,6 +16,26 @@ pub async fn detect_port(ports: &mut Vec<SerialPortInfo>) -> Option<String> {
             }
 
             *ports = new_ports;
+        }
+    }
+}
+
+pub async fn manual(receiver: &mut UnboundedReceiver<String>) -> Option<String> {
+    let mut ports = available_ports().ok()?;
+
+    output::print_ports(&ports);
+
+    let port = input::read_line(receiver).await?;
+
+    if port.to_lowercase().contains("dev/") || port.to_lowercase().contains("com") {
+        Some(port)
+    } else {
+        let index = port.parse().ok()?;
+
+        if index < ports.len() {
+            Some(ports.remove(index).port_name)
+        } else {
+            None
         }
     }
 }
