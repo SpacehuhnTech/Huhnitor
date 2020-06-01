@@ -19,10 +19,6 @@ pub fn print_plug_in() {
     println!("Plug in your device, enter a path, or enter an index...");
 }
 
-pub fn print_no_access() {
-    println!("Couldn't access serial ports!");
-}
-
 pub fn print_connected(port: &str) {
     println!("Connected to {} \\o/", port);
     println!("=================================================================================")
