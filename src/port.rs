@@ -62,7 +62,6 @@ pub async fn auto(receiver: &mut UnboundedReceiver<String>) -> Option<String> {
                 if index < ports.len() {
                     Some(ports.remove(index).port_name)
                 } else {
-                    println!("Index greater than or equal to length");
                     None
                 }
             }
