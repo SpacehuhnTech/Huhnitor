@@ -1,4 +1,3 @@
-use futures::stream::StreamExt;
 use serialport::prelude::*;
 use std::env;
 use std::time::Duration;
@@ -15,10 +14,13 @@ async fn main() {
 
     output::print_logo();
 
+    let (sender, mut receiver) = tokio::sync::mpsc::unbounded_channel();
+    tokio::spawn(input::receiver(sender));
+
     let tty_path = if args.iter().any(|arg| arg == "--no-auto") {
-        port::manual()
+        port::manual(&mut receiver).await
     } else {
-        port::auto()
+        port::auto(&mut receiver).await
     };
 
     let settings = tokio_serial::SerialPortSettings {
@@ -40,9 +42,6 @@ async fn main() {
 
         let mut port = BufReader::new(port);
 
-        let (sender, mut reciever) = tokio::sync::mpsc::unbounded_channel();
-        tokio::spawn(input::receiver(sender));
-
         output::print_connected(&inner_tty_path);
 
         let mut buf = Vec::new();
@@ -62,7 +61,7 @@ async fn main() {
                     }
                 },
 
-                Some(text_to_send) = reciever.next() => {
+                Some(text_to_send) = receiver.recv() => {
                     if port.write(text_to_send.as_bytes()).await.is_err() {
                         error!("Couldn't send message");
                     }

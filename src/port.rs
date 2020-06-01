@@ -1,16 +1,14 @@
-use serialport::available_ports;
-use std::thread::sleep;
-use std::time::Duration;
+use serialport::{available_ports, SerialPortInfo};
+use tokio::sync::mpsc::UnboundedReceiver;
 
-use crate::input;
 use crate::output;
 
-pub fn manual() -> Option<String> {
+pub async fn manual(receiver: &mut UnboundedReceiver<String>) -> Option<String> {
     let mut available = available_ports().ok()?;
 
     output::print_ports(&available);
 
-    let port = input::read_line();
+    let port = receiver.recv().await?.trim().to_string();
 
     if port.to_lowercase().contains("dev/") || port.to_lowercase().contains("com") {
         Some(port)
@@ -25,27 +23,49 @@ pub fn manual() -> Option<String> {
     }
 }
 
-pub fn auto() -> Option<String> {
-    if let Ok(mut ports) = available_ports() {
-        output::print_ports(&ports);
-        output::print_plug_in();
+pub async fn detect_port(ports: &mut Vec<SerialPortInfo>) -> Option<String> {
+    loop {
+        tokio::time::delay_for(std::time::Duration::from_millis(500)).await;
 
-        loop {
-            sleep(Duration::from_millis(500));
-
-            if let Ok(new_ports) = available_ports() {
-                for path in &new_ports {
-                    if !ports.contains(&path) {
-                        return Some(path.port_name.clone());
-                    }
+        if let Ok(new_ports) = available_ports() {
+            for path in &new_ports {
+                if !ports.contains(&path) {
+                    return Some(path.port_name.clone());
                 }
+            }
 
-                ports = new_ports;
+            *ports = new_ports;
+        }
+    }
+}
+
+pub async fn auto(receiver: &mut UnboundedReceiver<String>) -> Option<String> {
+    let mut ports = available_ports().ok()?;
+    output::print_ports(&ports);
+    output::print_plug_in();
+
+    tokio::select! {
+        port = detect_port(&mut ports) => {
+            if port.is_some() {
+                return port;
+            } else {
+                return None;
+            }
+        },
+
+        Some(port) = receiver.recv() => { 
+            if port.to_lowercase().contains("dev/") || port.to_lowercase().contains("com") {
+                Some(port.trim().to_string())
+            } else {
+                let index = port.trim().parse().ok()?;
+        
+                if index < ports.len() {
+                    Some(ports.remove(index).port_name)
+                } else {
+                    println!("Index greater than or equal to length");
+                    None
+                }
             }
         }
-    } else {
-        output::print_no_access();
     }
-
-    None
 }

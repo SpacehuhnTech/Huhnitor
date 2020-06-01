@@ -16,7 +16,7 @@ pub fn print_ports(ports: &std::vec::Vec<serialport::SerialPortInfo>) {
 }
 
 pub fn print_plug_in() {
-    println!("Plug in your device...");
+    println!("Plug in your device, enter a path, or enter an index...");
 }
 
 pub fn print_no_access() {
