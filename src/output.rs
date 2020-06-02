@@ -1,5 +1,13 @@
-use colored::*;
 use regex::Regex;
+use std::io::{self, Write};
+use termcolor::{Color, ColorChoice, ColorSpec, StandardStream, WriteColor};
+
+#[macro_export]
+macro_rules! error {
+    ($expression:expr) => {
+        eprintln!("[Error] {}", $expression);
+    };
+}
 
 fn printc(s: &str) {
     let user_input = Regex::new(r"^# ").unwrap();
@@ -11,24 +19,46 @@ fn printc(s: &str) {
     let default = Regex::new(r"^\[.*\]").unwrap();
     let command = Regex::new(r"(?m)^\S+( \[?-\S*( <\S*>)?\]?)*\s*$").unwrap();
 
-    if user_input.is_match(s) {
-        print!("{}", s.white().bold());
-    } else if divider.is_match(s) {
-        print!("{}", s.blue());
-    } else if headline.is_match(s) {
-        print!("{}", s.yellow().bold());
-    } else if note.is_match(s) {
-        print!("{}", s.cyan());
-    } else if error.is_match(s) {
-        print!("{}", s.red());
-    } else if option.is_match(s) {
-        print!("{}", s.green());
-    } else if default.is_match(s) {
-        print!("{}", s.green().bold());
-    } else if command.is_match(s) {
-        print!("{}", s.yellow());
-    } else {
-        print!("{}", s.white());
+    fn print(input: &str, color: Color, bold: bool) -> io::Result<()> {
+        let mut stdout = StandardStream::stdout(ColorChoice::Always);
+
+        stdout.set_color(
+            ColorSpec::new()
+                .set_fg(Some(color))
+                .set_bg(Some(Color::Black))
+                .set_bold(bold),
+        )?;
+
+        write!(&mut stdout, "{}", input)?;
+
+        stdout.reset()
+    }
+
+    let res = {
+        if user_input.is_match(s) {
+            print(s, Color::White, true)
+        } else if divider.is_match(s) {
+            print(s, Color::Blue, false)
+        } else if headline.is_match(s) {
+            print(s, Color::Yellow, true)
+        } else if note.is_match(s) {
+            print(s, Color::Cyan, false)
+        } else if error.is_match(s) {
+            print(s, Color::Red, false)
+        } else if option.is_match(s) {
+            print(s, Color::Green, false)
+        } else if default.is_match(s) {
+            print(s, Color::Green, true)
+        } else if command.is_match(s) {
+            print(s, Color::Yellow, false)
+        } else {
+            print(s, Color::White, false)
+        }
+    };
+
+    match res {
+        Ok(_) => {}
+        Err(e) => error!(e),
     }
 }
 
@@ -77,11 +107,4 @@ pub fn print_input(input: &Vec<u8>, color: bool) {
 
 pub fn clear() {
     println!("{esc}[2J{esc}[1;1H", esc = 27 as char);
-}
-
-#[macro_export]
-macro_rules! error {
-    ($expression:expr) => {
-        eprintln!("[Error] {}", $expression);
-    };
 }
