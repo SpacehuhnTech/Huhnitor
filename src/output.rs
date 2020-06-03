@@ -10,13 +10,28 @@ macro_rules! error {
 }
 
 fn printc(s: &str) {
+    // # command
     let user_input = Regex::new(r"^# ").unwrap();
+
+    // ================
     let divider = Regex::new(r"(?m)^\s*(-|=|#)+\s*$").unwrap();
+
+    //[ ===== Headline ====== ]
     let headline = Regex::new(r"^\[ =+ .* =+ \]").unwrap();
+
+    // > Finished job
     let note = Regex::new(r"^> \w+").unwrap();
+
+    // ERROR: something went wrong :(
     let error = Regex::new(r"^(ERROR)|(WARNING): ").unwrap();
+
+    // -arg value
     let option = Regex::new(r"^ {0,4}-?\S+.*: +\w+.*").unwrap();
+
+    // [default=something]
     let default = Regex::new(r"^\[.*\]").unwrap();
+
+    // command [-arg <value>] [-flag]
     let command = Regex::new(r"(?m)^\S+( \[?-\S*( <\S*>)?\]?)*\s*$").unwrap();
 
     fn print(input: &str, color: Color, bold: bool) -> io::Result<()> {
