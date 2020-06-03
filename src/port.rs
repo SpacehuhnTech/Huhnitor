@@ -20,13 +20,7 @@ async fn detect_port(ports: &mut Vec<SerialPortInfo>) -> Option<String> {
     }
 }
 
-pub async fn manual(receiver: &mut UnboundedReceiver<String>) -> Option<String> {
-    let mut ports = available_ports().ok()?;
-
-    output::print_ports(&ports);
-
-    let port = input::read_line(receiver).await?;
-
+fn manual_port(port: String, ports: &mut Vec<SerialPortInfo>) -> Option<String> {
     if port.to_lowercase().contains("dev/") || port.to_lowercase().contains("com") {
         Some(port)
     } else {
@@ -40,6 +34,16 @@ pub async fn manual(receiver: &mut UnboundedReceiver<String>) -> Option<String> 
     }
 }
 
+pub async fn manual(receiver: &mut UnboundedReceiver<String>) -> Option<String> {
+    let mut ports = available_ports().ok()?;
+
+    output::print_ports(&ports);
+
+    let port = input::read_line(receiver).await?;
+
+    manual_port(port, &mut ports)
+}
+
 pub async fn auto(receiver: &mut UnboundedReceiver<String>) -> Option<String> {
     let mut ports = available_ports().ok()?;
     output::print_ports(&ports);
@@ -49,17 +53,7 @@ pub async fn auto(receiver: &mut UnboundedReceiver<String>) -> Option<String> {
         port = detect_port(&mut ports) => port,
 
         Some(port) = input::read_line(receiver) => {
-            if port.to_lowercase().contains("dev/") || port.to_lowercase().contains("com") {
-                Some(port)
-            } else {
-                let index = port.parse().ok()?;
-
-                if index < ports.len() {
-                    Some(ports.remove(index).port_name)
-                } else {
-                    None
-                }
-            }
+            manual_port(port, &mut ports)
         }
     }
 }
