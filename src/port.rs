@@ -5,19 +5,19 @@ use std::time::Duration;
 use crate::input;
 use crate::output;
 
-pub fn manual() -> Option<String> {
+pub fn manual(pref: &output::Preferences) -> Option<String> {
     let available = available_ports().ok()?;
 
-    output::print_ports(&available);
+    output::ports(&available, pref);
 
     let port = input::read_line();
 
     Some(port)
 }
 
-pub fn auto() -> Option<String> {
+pub fn auto(pref: &output::Preferences) -> Option<String> {
     if let Ok(original) = available_ports() {
-        output::print_plug_in();
+        output::plug_in(pref);
 
         for _ in 0..30 {
             if let Ok(paths) = available_ports() {
@@ -30,7 +30,7 @@ pub fn auto() -> Option<String> {
             sleep(Duration::from_millis(1000));
         }
     } else {
-        output::print_no_access();
+        output::no_access(pref);
     }
 
     None

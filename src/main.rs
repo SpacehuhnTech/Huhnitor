@@ -11,18 +11,6 @@ mod port;
 
 #[tokio::main]
 async fn main() {
-    let args: Vec<String> = env::args().collect();
-
-    output::print_logo();
-
-    let colors_enabled = !args.iter().any(|arg| arg == "--no-color");
-
-    let tty_path = if args.iter().any(|arg| arg == "-s") {
-        port::manual()
-    } else {
-        port::auto()
-    };
-
     let settings = tokio_serial::SerialPortSettings {
         baud_rate: 115200,
         data_bits: DataBits::Eight,
@@ -31,6 +19,20 @@ async fn main() {
         stop_bits: StopBits::One,
         timeout: Duration::from_secs(10),
     };
+
+    let args: Vec<String> = env::args().collect();
+
+    let no_color = args.iter().any(|arg| arg == "--no-color");
+    let pref = output::Preferences{ color_enabled: !no_color };
+
+    output::logo(&pref);
+    output::version(&pref);
+
+    let tty_path = if args.iter().any(|arg| arg == "-s") {
+        port::manual(&pref)
+    } else {
+        port::auto(&pref)
+    };   
 
     if let Some(inner_tty_path) = tty_path {
         #[allow(unused_mut)] // Ignore warning from windows compilers
@@ -45,7 +47,8 @@ async fn main() {
             let (sender, mut reciever) = tokio::sync::mpsc::unbounded_channel();
             tokio::spawn(input::receiver(sender));
 
-            output::print_connected();
+            output::connected(&pref);
+            output::divider(&pref);
 
             let mut buf = Vec::new();
             loop {
@@ -55,7 +58,8 @@ async fn main() {
                             break;
                         },
                         Ok(_) => {
-                            output::print_input(&buf, colors_enabled);
+                            let input = String::from_utf8_lossy(&buf).to_string();
+                            output::print(&input, &pref);
                             buf = Vec::new();
                         },
                         Err(e) => {
@@ -75,6 +79,6 @@ async fn main() {
             error!("Couldn't open serial port!");
         }
     } else {
-        output::print_no_serial_port();
+        output::no_ports(&pref);
     }
 }
