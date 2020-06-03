@@ -1,37 +1,59 @@
-use serialport::available_ports;
-use std::thread::sleep;
-use std::time::Duration;
+use serialport::{available_ports, SerialPortInfo};
+use tokio::sync::mpsc::UnboundedReceiver;
 
 use crate::input;
 use crate::output;
 
-pub fn manual() -> Option<String> {
-    let available = available_ports().ok()?;
+async fn detect_port(ports: &mut Vec<SerialPortInfo>) -> Option<String> {
+    loop {
+        tokio::time::delay_for(std::time::Duration::from_millis(500)).await;
 
-    output::print_ports(&available);
-
-    let port = input::read_line();
-
-    Some(port)
-}
-
-pub fn auto() -> Option<String> {
-    if let Ok(original) = available_ports() {
-        output::print_plug_in();
-
-        for _ in 0..30 {
-            if let Ok(paths) = available_ports() {
-                for path in paths {
-                    if !original.contains(&path) {
-                        return Some(path.port_name);
-                    }
+        if let Ok(new_ports) = available_ports() {
+            for path in &new_ports {
+                if !ports.contains(&path) {
+                    return Some(path.port_name.clone());
                 }
             }
-            sleep(Duration::from_millis(1000));
-        }
-    } else {
-        output::print_no_access();
-    }
 
-    None
+            *ports = new_ports;
+        }
+    }
+}
+
+fn manual_port(port: String, ports: &mut Vec<SerialPortInfo>) -> Option<String> {
+    if port.to_lowercase().contains("dev/") || port.to_lowercase().contains("com") {
+        Some(port)
+    } else {
+        let index = port.parse().ok()?;
+
+        if index < ports.len() {
+            Some(ports.remove(index).port_name)
+        } else {
+            None
+        }
+    }
+}
+
+pub async fn manual(receiver: &mut UnboundedReceiver<String>) -> Option<String> {
+    let mut ports = available_ports().ok()?;
+
+    output::print_ports(&ports);
+
+    let port = input::read_line(receiver).await?;
+
+    manual_port(port, &mut ports)
+}
+
+pub async fn auto(receiver: &mut UnboundedReceiver<String>) -> Option<String> {
+    let mut ports = available_ports().ok()?;
+    output::print_ports(&ports);
+    output::print_plug_in();
+
+    tokio::select! {
+        port = detect_port(&mut ports) => port,
+
+        Some(port) = input::read_line(receiver) => {
+            manual_port(port, &mut ports)
+        }
+    }
 }
