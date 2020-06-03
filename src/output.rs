@@ -123,3 +123,9 @@ pub fn print_input(input: &Vec<u8>, color: bool) {
 pub fn clear() {
     println!("{esc}[2J{esc}[1;1H", esc = 27 as char);
 }
+
+pub fn print_no_serial_port() {
+    error!("No serial port found :(");
+    println!("Make sure the USB connection works and necessary drivers are installed:");
+    println!("https://github.com/SpacehuhnTech/Huhnitor#drivers");
+}

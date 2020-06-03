@@ -74,7 +74,7 @@ async fn main() {
         } else { // Port handler
             error!("Couldn't open serial port!");
         }
-    } else { // Path handler
-        error!("No valid serial port found!");
+    } else {
+        output::print_no_serial_port();
     }
 }
