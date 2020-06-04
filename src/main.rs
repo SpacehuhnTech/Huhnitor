@@ -25,7 +25,7 @@ async fn main() {
     let no_color = args.iter().any(|arg| arg == "--no-color");
     let pref = output::Preferences{ color_enabled: !no_color };
 
-    output::logo(&pref);
+    output::logo();
     output::version(&pref);
 
     let tty_path = if args.iter().any(|arg| arg == "-s") {

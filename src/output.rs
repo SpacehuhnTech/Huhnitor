@@ -1,4 +1,4 @@
-use regex::Regex;
+use regex::{Regex, RegexSet};
 use std::io::{self, Write};
 use termcolor::{Color, ColorChoice, ColorSpec, StandardStream, WriteColor};
 
@@ -100,7 +100,7 @@ pub fn connected(pref: &Preferences) {
     print("> Connected \\o/\r\n", pref);
 }
 
-pub fn logo(/*pref: &Preferences*/) {
+pub fn logo() {
     let c_bytes = include_bytes!("visual/chicken.txt");
     let mut logo_str = String::from_utf8_lossy(c_bytes).to_string();
     println!("{}", logo_str);
