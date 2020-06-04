@@ -1,4 +1,4 @@
-use regex::{Regex, RegexSet};
+use regex::RegexSet;
 use std::io::{self, Write};
 use termcolor::{Color, ColorChoice, ColorSpec, StandardStream, WriteColor};
 
@@ -16,71 +16,56 @@ pub struct Preferences {
 // Statically compile regex to avoid repetetive compiling
 // Rust Regex can be tested here: https://rustexp.lpil.uk/
 lazy_static::lazy_static! {
-    // # command
-    static ref USER_INPUT: Regex = Regex::new(r"^# ").unwrap();
-
-    // ================
-    static ref DIVIDER: Regex = Regex::new(r"(?m)^\s*(-|=|#)+\s*$").unwrap();
-
-    // [ ===== Headline ====== ]
-    static ref HEADLINE: Regex = Regex::new(r"^\[ =+ ?.* ?=+ \]").unwrap();
-
-    // > Finished job
-    static ref NOTE: Regex = Regex::new(r"^> \w+").unwrap();
-
-    // ERROR: something went wrong :(
-    static ref ERROR: Regex = Regex::new(r"^(ERROR)|(WARNING): ").unwrap();
-
-    // -arg value
-    static ref OPTION: Regex = Regex::new(r"^ {0,4}-?\S+.*: +\w+.*").unwrap();
-
-    // [default=something]
-    static ref DEFAULT: Regex = Regex::new(r"^\[.*\]").unwrap();
-
-    // command [-arg <value>] [-flag]
-    static ref COMMAND: Regex = Regex::new(r"(?m)^\S+( \[?-\S*( <\S*>)?\]?)*\s*$").unwrap();
-
-    // set
     static ref REGSET: RegexSet = RegexSet::new(&[
-        r"^# ",
-        r"(?m)^\s*(-|=|#)+\s*$",
-        r"^\[ =+ ?.* ?=+ \]",
-        r"^> \w+",
-        r"^(ERROR)|(WARNING): ",
-        r"^ {0,4}-?\S+.*: +\w+.*",
-        r"^\[.*\]",
-        r"(?m)^\S+( \[?-\S*( <\S*>)?\]?)*\s*$",
+        r"^# ",                                 // # command
+        r"(?m)^\s*(-|=|#)+\s*$",                // ================
+        r"^\[ =+ ?.* ?=+ \]",                   // [ ===== Headline ====== ]
+        r"^> \w+",                              // > Finished job
+        r"^(ERROR)|(WARNING): ",                // ERROR: something went wrong :(
+        r"^ {0,4}-?\S+.*: +\w+.*",              // -arg value
+        r"^\[.*\]",                             // [default=something]
+        r"(?m)^\S+( \[?-\S*( <\S*>)?\]?)*\s*$", // command [-arg <value>] [-flag]
     ]).unwrap();
+
+    static ref COLORSET: Vec<(Color, bool)> = vec![
+        (Color::White, true),   // # command
+        (Color::Blue, false),   // ================
+        (Color::Yellow, true),  // [ ===== Headline ====== ]
+        (Color::Cyan, false),   // > Finished job
+        (Color::Red, false),    // ERROR: something went wrong :(
+        (Color::Green, false),  // -arg value
+        (Color::Green, true),   // [default=something]
+        (Color::Yellow, false), // command [-arg <value>] [-flag]
+    ];
 }
 
 fn parse(s: &str) {
     let matches: Vec<_> = REGSET.matches(s).into_iter().collect();
 
-    let colors: Vec<(Color, bool)> = vec![
-        (Color::White, true),  // # command
-        (Color::Blue, false),  // ================
-        (Color::Yellow, true), // [ ===== Headline ====== ]
-        (Color::Cyan, false),  // > Finished job
-        (Color::Red, false),   // ERROR: something went wrong :(
-        (Color::Green, false), // -arg value
-        (Color::Green, true),  // [default=something]
-        (Color::Yellow, false) // command [-arg <value>] [-flag]
-    ];
-
     let (color, bold) = if !matches.is_empty() {
-        colors[matches[0]]
+        COLORSET[matches[0]]
     } else {
         (Color::White, false)
     };
 
-    let mut stdout = StandardStream::stdout(ColorChoice::Always);
-    stdout.set_color(
-        ColorSpec::new()
-            .set_fg(Some(color))
-            .set_bold(bold),
-    ).unwrap();
-    write!(&mut stdout, "{}", s);
-    stdout.reset();
+    fn print_color(input: &str, color: Color, bold: bool) -> io::Result<()> {
+        let mut stdout = StandardStream::stdout(ColorChoice::Always);
+
+        stdout.set_color(
+            ColorSpec::new()
+                .set_fg(Some(color))
+                //.set_bg(Some(Color::Black))
+                .set_bold(bold),
+        )?;
+
+        write!(&mut stdout, "{}", input)?;
+        stdout.reset()
+    }
+
+    match print_color(s, color, bold) {
+        Ok(_) => {}
+        Err(e) => error!(e),
+    }
 }
 
 pub fn print(s: &str, p: &Preferences) {
