@@ -105,7 +105,7 @@ pub fn connected(pref: &Preferences) {
 
 pub fn logo() {
     let c_bytes = include_bytes!("visual/chicken.txt");
-    let mut logo_str = String::from_utf8_lossy(c_bytes).to_string();
+    let logo_str = String::from_utf8_lossy(c_bytes).to_string();
     println!("{}", logo_str);
 }
 
