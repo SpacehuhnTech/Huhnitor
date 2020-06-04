@@ -17,7 +17,7 @@ async fn main() {
     let (sender, mut receiver) = tokio::sync::mpsc::unbounded_channel();
     tokio::spawn(input::receiver(sender));
 
-    let tty_path = if args.iter().any(|arg| arg == "-s") {
+    let tty_path = if args.iter().any(|arg| arg == "--no-auto") {
         port::manual(&mut receiver).await
     } else {
         port::auto(&mut receiver).await
