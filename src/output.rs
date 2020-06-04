@@ -22,7 +22,7 @@ lazy_static::lazy_static! {
     // ================
     static ref DIVIDER: Regex = Regex::new(r"(?m)^\s*(-|=|#)+\s*$").unwrap();
 
-    //[ ===== Headline ====== ]
+    // [ ===== Headline ====== ]
     static ref HEADLINE: Regex = Regex::new(r"^\[ =+ ?.* ?=+ \]").unwrap();
 
     // > Finished job
@@ -57,14 +57,14 @@ fn parse(s: &str) {
     let matches: Vec<_> = REGSET.matches(s).into_iter().collect();
 
     let colors: Vec<(Color, bool)> = vec![
-        (Color::White, true),
-        (Color::Blue, false),
-        (Color::Yellow, true),
-        (Color::Cyan, false),
-        (Color::Red, false),
-        (Color::Green, false),
-        (Color::Green, true),
-        (Color::Yellow, false)
+        (Color::White, true),  // # command
+        (Color::Blue, false),  // ================
+        (Color::Yellow, true), // [ ===== Headline ====== ]
+        (Color::Cyan, false),  // > Finished job
+        (Color::Red, false),   // ERROR: something went wrong :(
+        (Color::Green, false), // -arg value
+        (Color::Green, true),  // [default=something]
+        (Color::Yellow, false) // command [-arg <value>] [-flag]
     ];
 
     let (color, bold) = if !matches.is_empty() {
