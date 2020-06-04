@@ -13,71 +13,74 @@ pub struct Preferences {
     pub color_enabled: bool,
 }
 
-fn parse(s: &str) {
-    // Rust Regex can be tested here: https://rustexp.lpil.uk/
-
+// Statically compile regex to avoid repetetive compiling
+// Rust Regex can be tested here: https://rustexp.lpil.uk/
+lazy_static::lazy_static! {
     // # command
-    let user_input = Regex::new(r"^# ").unwrap();
+    static ref USER_INPUT: Regex = Regex::new(r"^# ").unwrap();
 
     // ================
-    let divider = Regex::new(r"(?m)^\s*(-|=|#)+\s*$").unwrap();
+    static ref DIVIDER: Regex = Regex::new(r"(?m)^\s*(-|=|#)+\s*$").unwrap();
 
     //[ ===== Headline ====== ]
-    let headline = Regex::new(r"^\[ =+ ?.* ?=+ \]").unwrap();
+    static ref HEADLINE: Regex = Regex::new(r"^\[ =+ ?.* ?=+ \]").unwrap();
 
     // > Finished job
-    let note = Regex::new(r"^> \w+").unwrap();
+    static ref NOTE: Regex = Regex::new(r"^> \w+").unwrap();
 
     // ERROR: something went wrong :(
-    let error = Regex::new(r"^(ERROR)|(WARNING): ").unwrap();
+    static ref ERROR: Regex = Regex::new(r"^(ERROR)|(WARNING): ").unwrap();
 
     // -arg value
-    let option = Regex::new(r"^ {0,4}-?\S+.*: +\w+.*").unwrap();
+    static ref OPTION: Regex = Regex::new(r"^ {0,4}-?\S+.*: +\w+.*").unwrap();
 
     // [default=something]
-    let default = Regex::new(r"^\[.*\]").unwrap();
+    static ref DEFAULT: Regex = Regex::new(r"^\[.*\]").unwrap();
 
     // command [-arg <value>] [-flag]
-    let command = Regex::new(r"(?m)^\S+( \[?-\S*( <\S*>)?\]?)*\s*$").unwrap();
+    static ref COMMAND: Regex = Regex::new(r"(?m)^\S+( \[?-\S*( <\S*>)?\]?)*\s*$").unwrap();
 
-    fn printc(input: &str, color: Color, bold: bool) -> io::Result<()> {
-        let mut stdout = StandardStream::stdout(ColorChoice::Always);
-        stdout.set_color(
-            ColorSpec::new()
-                .set_fg(Some(color))
-                .set_bg(Some(Color::Black))
-                .set_bold(bold),
-        )?;
-        write!(&mut stdout, "{}", input)?;
-        stdout.reset()
-    }
+    // set
+    static ref REGSET: RegexSet = RegexSet::new(&[
+        r"^# ",
+        r"(?m)^\s*(-|=|#)+\s*$",
+        r"^\[ =+ ?.* ?=+ \]",
+        r"^> \w+",
+        r"^(ERROR)|(WARNING): ",
+        r"^ {0,4}-?\S+.*: +\w+.*",
+        r"^\[.*\]",
+        r"(?m)^\S+( \[?-\S*( <\S*>)?\]?)*\s*$",
+    ]).unwrap();
+}
 
-    let res = {
-        if user_input.is_match(s) {
-            printc(s, Color::White, true)
-        } else if divider.is_match(s) {
-            printc(s, Color::Blue, false)
-        } else if headline.is_match(s) {
-            printc(s, Color::Yellow, true)
-        } else if note.is_match(s) {
-            printc(s, Color::Cyan, false)
-        } else if error.is_match(s) {
-            printc(s, Color::Red, false)
-        } else if option.is_match(s) {
-            printc(s, Color::Green, false)
-        } else if default.is_match(s) {
-            printc(s, Color::Green, true)
-        } else if command.is_match(s) {
-            printc(s, Color::Yellow, false)
-        } else {
-            printc(s, Color::White, false)
-        }
+fn parse(s: &str) {
+    let matches: Vec<_> = REGSET.matches(s).into_iter().collect();
+
+    let colors: Vec<(Color, bool)> = vec![
+        (Color::White, true),
+        (Color::Blue, false),
+        (Color::Yellow, true),
+        (Color::Cyan, false),
+        (Color::Red, false),
+        (Color::Green, false),
+        (Color::Green, true),
+        (Color::Yellow, false)
+    ];
+
+    let (color, bold) = if !matches.is_empty() {
+        colors[matches[0]]
+    } else {
+        (Color::White, false)
     };
 
-    match res {
-        Ok(_) => {}
-        Err(e) => error!(e),
-    }
+    let mut stdout = StandardStream::stdout(ColorChoice::Always);
+    stdout.set_color(
+        ColorSpec::new()
+            .set_fg(Some(color))
+            .set_bold(bold),
+    ).unwrap();
+    write!(&mut stdout, "{}", s);
+    stdout.reset();
 }
 
 pub fn print(s: &str, p: &Preferences) {
