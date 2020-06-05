@@ -4,8 +4,9 @@ pub fn print_logo() {
 }
 
 pub fn print_ports(ports: &std::vec::Vec<serialport::SerialPortInfo>) {
-    if ports.len() == 0 {
+    if ports.is_empty() {
         println!("No serial devices found :(");
+        println!("Consider using the --help or --driver argument if you're having trouble.");
     } else {
         println!("Your available serial ports are: ");
 
@@ -28,6 +29,21 @@ pub fn print_connected(port: &str) {
 pub fn print_input(input: &Vec<u8>) {
     let input_str = String::from_utf8_lossy(input);
     print!("{}", input_str);
+}
+
+pub fn help() {
+    println!("Args ============================================================================");
+    println!("--help    => print the help screen");
+    println!("--no-auto => manually select serial port");
+    println!("--driver  => open link to probable driver in your deafult browser");
+    println!("=================================================================================");
+}
+
+pub fn driver() {
+    if webbrowser::open("https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers").is_err() {
+        println!("Couldn't open \"https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers\",
+            navigate here for a driver download.");
+    }
 }
 
 #[macro_export]
