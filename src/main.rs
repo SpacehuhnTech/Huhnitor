@@ -17,6 +17,13 @@ async fn main() {
     let (sender, mut receiver) = tokio::sync::mpsc::unbounded_channel();
     tokio::spawn(input::receiver(sender));
 
+    // Check for invalid argument(s)
+    for arg in args[1..].iter() { 
+        if !vec!["--no-auto", "--help", "--driver"].contains(&arg.as_ref()) {
+            println!("Argument \"{}\" not found :(", arg);
+        }
+    }
+
     let tty_path = if args.iter().any(|arg| arg == "--no-auto") {
         port::manual(&mut receiver).await
     } else {
