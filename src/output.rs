@@ -40,9 +40,9 @@ pub fn help() {
 }
 
 pub fn driver() {
-    if webbrowser::open("https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers").is_err() {
-        println!("Couldn't open \"https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers\",
-            navigate here for a driver download.");
+    if webbrowser::open("https://github.com/spacehuhntech/huhnitor#drivers").is_err() {
+        println!("Couldn't open URL :(");
+        println!("Visit \"https://github.com/spacehuhntech/huhnitor#drivers\"");
     }
 }
 
