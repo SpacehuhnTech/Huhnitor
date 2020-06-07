@@ -17,11 +17,19 @@ async fn main() {
     let (sender, mut receiver) = tokio::sync::mpsc::unbounded_channel();
     tokio::spawn(input::receiver(sender));
 
-    let tty_path = if args.iter().any(|arg| arg == "--no-auto") {
-        port::manual(&mut receiver).await
-    } else {
-        port::auto(&mut receiver).await
-    };
+    let mut tty_path = None;
+    for arg in args[1..].iter() {
+        match arg.as_ref() {
+            "--no-auto" => tty_path = port::manual(&mut receiver).await,
+            "--help" => { output::help(); return; },
+            "--driver" => { output::driver(); return; },
+            _ => println!("Argument \"{}\" not found :(", arg)
+        }
+    }
+
+    if tty_path.is_none() {
+        tty_path = port::auto(&mut receiver).await;
+    }
 
     let settings = tokio_serial::SerialPortSettings {
         baud_rate: 115200,
