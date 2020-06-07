@@ -79,8 +79,10 @@ fn parse(s: &str) {
             .set_fg(Some(color))
             .set_bold(bold),
     ).unwrap();
-    write!(&mut stdout, "{}", s);
-    stdout.reset();
+
+    if write!(&mut stdout, "{}", s).is_err() || stdout.reset().is_err() {
+        error!("Couldn't write colored text to stdout!");
+    }
 }
 
 pub fn print(s: &str, p: &Preferences) {
