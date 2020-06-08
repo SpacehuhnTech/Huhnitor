@@ -2,6 +2,7 @@ use serialport::prelude::*;
 use std::env;
 use std::time::Duration;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
+use tokio::runtime::Runtime;
 
 #[macro_use]
 mod input;
@@ -40,7 +41,8 @@ fn parse_args() -> Arguments {
 
 async fn monitor(auto: bool, out: &output::Preferences) {
     let (sender, mut receiver) = tokio::sync::mpsc::unbounded_channel();
-    tokio::spawn(input::receiver(sender));
+    
+    std::thread::spawn(|| { input::receiver(sender) });
 
     let settings = tokio_serial::SerialPortSettings {
         baud_rate: 115200,

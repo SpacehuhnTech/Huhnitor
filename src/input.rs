@@ -5,7 +5,7 @@ use tokio::sync::mpsc::{UnboundedReceiver, UnboundedSender};
 use crate::error;
 use crate::output;
 
-pub async fn receiver(sender: UnboundedSender<String>) {
+pub fn receiver(sender: UnboundedSender<String>) {
     loop {
         let mut input = String::new();
         if io::stdin().read_line(&mut input).is_ok() {
