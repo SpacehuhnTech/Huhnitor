@@ -23,17 +23,17 @@ async fn main() {
     let args: Vec<String> = env::args().collect();
 
     let no_color = args.iter().any(|arg| arg == "--no-color");
-    let pref = output::Preferences {
+    let out = output::Preferences {
         color_enabled: !no_color,
     };
 
-    pref.logo();
-    pref.version();
+    out.logo();
+    out.version();
 
     let tty_path = if args.iter().any(|arg| arg == "-s") {
-        port::manual(&pref)
+        port::manual(&out)
     } else {
-        port::auto(&pref)
+        port::auto(&out)
     };
 
     if let Some(inner_tty_path) = tty_path {
@@ -48,8 +48,8 @@ async fn main() {
             let (sender, mut reciever) = tokio::sync::mpsc::unbounded_channel();
             tokio::spawn(input::receiver(sender));
 
-            pref.println("> Connected \\o/");
-            pref.divider();
+            out.println("> Connected \\o/");
+            out.divider();
 
             let mut buf = Vec::new();
             loop {
@@ -60,7 +60,7 @@ async fn main() {
                         },
                         Ok(_) => {
                             let input = String::from_utf8_lossy(&buf).to_string();
-                            pref.print(&input);
+                            out.print(&input);
                             buf = Vec::new();
                         },
                         Err(e) => {
@@ -81,6 +81,6 @@ async fn main() {
             error!("Couldn't open serial port!");
         }
     } else {
-        pref.no_ports();
+        out.no_ports();
     }
 }
