@@ -104,7 +104,7 @@ impl Preferences {
 
     pub fn ports(&self, ports: &std::vec::Vec<serialport::SerialPortInfo>) {
         if ports.len() == 0 {
-            self.println("> No serial devices found :(");
+            self.hint();
         } else {
             self.println("Available serial ports:");
             for (id, port) in ports.iter().enumerate() {
@@ -115,8 +115,7 @@ impl Preferences {
     }
 
     pub fn hint(&self) {
-        error!("No serial port found :(");
-        self.println("> No serial port found :(");
+        self.println("> No serial port found");
         self.println("Make sure the USB connection works and necessary drivers are installed:");
         self.println("https://github.com/SpacehuhnTech/Huhnitor#drivers");
     }
