@@ -52,3 +52,7 @@ macro_rules! error {
         eprintln!("[Error] {}", $expression);
     };
 }
+
+pub fn goodbye() {
+    println!("Thanks for using Huhnitor :)");
+}

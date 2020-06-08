@@ -8,28 +8,36 @@ mod input;
 mod output;
 mod port;
 
-#[tokio::main]
-async fn main() {
-    let args: Vec<String> = env::args().collect();
+struct Arguments {
+    help: bool,
+    driver: bool,
+    auto: bool,
+}
 
-    output::print_logo();
+fn parse_args() -> Arguments {
+    let mut args = Arguments {
+        help: false,
+        driver: false,
+        auto: true,
+    };
 
-    let (sender, mut receiver) = tokio::sync::mpsc::unbounded_channel();
-    tokio::spawn(input::receiver(sender));
+    let words: Vec<String> = env::args().collect();
 
-    let mut tty_path = None;
-    for arg in args[1..].iter() {
-        match arg.as_ref() {
-            "--no-auto" => tty_path = port::manual(&mut receiver).await,
-            "--help" => { output::help(); return; },
-            "--driver" => { output::driver(); return; },
-            _ => println!("Argument \"{}\" not found :(", arg)
+    for word in words[1..].iter() {
+        match word.as_ref() {
+            "--help" | "-h" => args.help = true,
+            "--driver" | "-d" => args.driver = true,
+            "--no-auto" | "-na" => args.auto = false,
+            _ => println!("Wrong parameter..."),
         }
     }
 
-    if tty_path.is_none() {
-        tty_path = port::auto(&mut receiver).await;
-    }
+    args
+}
+
+async fn monitor(auto: bool) {
+    let (sender, mut receiver) = tokio::sync::mpsc::unbounded_channel();
+    tokio::spawn(input::receiver(sender));
 
     let settings = tokio_serial::SerialPortSettings {
         baud_rate: 115200,
@@ -40,10 +48,17 @@ async fn main() {
         timeout: Duration::from_secs(10),
     };
 
+    let mut tty_path = None;
+
+    if auto {
+        tty_path = port::auto(&mut receiver).await;
+    } else {
+        tty_path = port::manual(&mut receiver).await;
+    }
+
     if let Some(inner_tty_path) = tty_path {
         #[allow(unused_mut)] // Ignore warning from windows compilers
         if let Ok(mut port) = tokio_serial::Serial::from_path(&inner_tty_path, &settings) {
-
             #[cfg(unix)]
             port.set_exclusive(false)
                 .expect("Unable to set serial port exclusive to false");
@@ -84,4 +99,21 @@ async fn main() {
         // Path handler
         error!("No valid serial port found!");
     }
+}
+
+#[tokio::main]
+async fn main() {
+    output::print_logo();
+
+    let args = parse_args();
+
+    if args.help {
+        output::help();
+    } else if args.driver {
+        output::driver();
+    } else {
+        monitor(args.auto).await;
+    }
+
+    output::goodbye();
 }

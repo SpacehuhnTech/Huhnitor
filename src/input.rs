@@ -1,5 +1,5 @@
-use tokio::sync::mpsc::{UnboundedSender, UnboundedReceiver};
 use std::io;
+use tokio::sync::mpsc::{UnboundedReceiver, UnboundedSender};
 
 #[macro_use]
 use crate::error;
