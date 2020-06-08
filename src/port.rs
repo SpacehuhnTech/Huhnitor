@@ -34,20 +34,27 @@ fn manual_port(port: String, ports: &mut Vec<SerialPortInfo>) -> Option<String> 
     }
 }
 
-pub async fn manual(receiver: &mut UnboundedReceiver<String>) -> Option<String> {
+pub async fn manual(
+    receiver: &mut UnboundedReceiver<String>,
+    out: &output::Preferences,
+) -> Option<String> {
     let mut ports = available_ports().ok()?;
 
-    output::print_ports(&ports);
+    out.ports(&ports);
 
     let port = input::read_line(receiver).await?;
 
     manual_port(port, &mut ports)
 }
 
-pub async fn auto(receiver: &mut UnboundedReceiver<String>) -> Option<String> {
+pub async fn auto(
+    receiver: &mut UnboundedReceiver<String>,
+    out: &output::Preferences,
+) -> Option<String> {
     let mut ports = available_ports().ok()?;
-    output::print_ports(&ports);
-    output::print_plug_in();
+
+    out.ports(&ports);
+    out.println("> Plug your deauther in, or type the port ID or name");
 
     tokio::select! {
         port = detect_port(&mut ports) => port,

@@ -15,14 +15,23 @@ The Huhnitor is designed to be as easy to use as possible:
 1. Download the latest [release](https://github.com/SpacehuhnTech/Huhnitor/releases) for your operating system
 2. Run it
 3. Plug in your deauther
-4. Have fun using the command line interface of the [ESP8266 Deauther](https://github.com/SpacehuhnTech/esp8266_deauther) :slightly_smiling_face:
+4. Have fun using the command line interface of the [ESP8266 Deauther](https://github.com/SpacehuhnTech/esp8266_deauther) :slightly_smiling_face:  
+
+**Please note** that while this software can be used for other serial devices and projects, it is designed to be used with the 
+[ESP8266 Deauther Version 3](https://github.com/SpacehuhnTech/esp8266_deauther/tree/v3).  
+
+### Arguments
+
+* `--no-auto` disables the automatic serial port detection.  
+* `--no-color` disables the colored output (recommended for older deauther versions).  
 
 If you wouldn't like to use the automatic method of determining the correct serial port, use the argument `--no-auto` when starting
 The Huhnitor to pick manually.
 
 ## Drivers
 
-Your deauther is not detected when plugged in? 
+Your deauther is not detected when plugged in?  
+**Make sure the USB connection is working. Some cables can only charge but not transmit data.**  
 Depending on the serial chip that is used on the ESP8266 development board you have, you might need to install the right driver:  
 
 * [CP210x](https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers)

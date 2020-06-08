@@ -12,6 +12,7 @@ struct Arguments {
     help: bool,
     driver: bool,
     auto: bool,
+    color: bool,
 }
 
 fn parse_args() -> Arguments {
@@ -19,6 +20,7 @@ fn parse_args() -> Arguments {
         help: false,
         driver: false,
         auto: true,
+        color: true,
     };
 
     let words: Vec<String> = env::args().collect();
@@ -28,6 +30,7 @@ fn parse_args() -> Arguments {
             "--help" | "-h" => args.help = true,
             "--driver" | "-d" => args.driver = true,
             "--no-auto" | "-na" => args.auto = false,
+            "--no-color" | "-nc" => args.color = false,
             _ => println!("Wrong parameter..."),
         }
     }
@@ -35,7 +38,7 @@ fn parse_args() -> Arguments {
     args
 }
 
-async fn monitor(auto: bool) {
+async fn monitor(auto: bool, out: &output::Preferences) {
     let (sender, mut receiver) = tokio::sync::mpsc::unbounded_channel();
     tokio::spawn(input::receiver(sender));
 
@@ -51,9 +54,9 @@ async fn monitor(auto: bool) {
     let mut tty_path = None;
 
     if auto {
-        tty_path = port::auto(&mut receiver).await;
+        tty_path = port::auto(&mut receiver, out).await;
     } else {
-        tty_path = port::manual(&mut receiver).await;
+        tty_path = port::manual(&mut receiver, out).await;
     }
 
     if let Some(inner_tty_path) = tty_path {
@@ -65,7 +68,7 @@ async fn monitor(auto: bool) {
 
             let mut port = BufReader::new(port);
 
-            output::print_connected(&inner_tty_path);
+            out.connected(&inner_tty_path);
 
             let mut buf = Vec::new();
             loop {
@@ -75,7 +78,8 @@ async fn monitor(auto: bool) {
                             break;
                         },
                         Ok(_) => {
-                            output::print_input(&buf);
+                            let input = String::from_utf8_lossy(&buf).to_string();
+                            out.print(&input);
                             buf = Vec::new();
                         },
                         Err(e) => {
@@ -97,23 +101,28 @@ async fn monitor(auto: bool) {
         }
     } else {
         // Path handler
-        error!("No valid serial port found!");
+        out.hint();
     }
 }
 
 #[tokio::main]
 async fn main() {
-    output::print_logo();
-
     let args = parse_args();
 
+    let out = output::Preferences {
+        color_enabled: args.color,
+    };
+
+    out.logo();
+    out.version();
+
     if args.help {
-        output::help();
+        out.help();
     } else if args.driver {
-        output::driver();
+        out.driver();
     } else {
-        monitor(args.auto).await;
+        monitor(args.auto, &out).await;
     }
 
-    output::goodbye();
+    out.goodbye();
 }
