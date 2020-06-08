@@ -23,21 +23,22 @@ async fn main() {
     let args: Vec<String> = env::args().collect();
 
     let no_color = args.iter().any(|arg| arg == "--no-color");
-    let pref = output::Preferences{ color_enabled: !no_color };
+    let pref = output::Preferences {
+        color_enabled: !no_color,
+    };
 
-    output::logo();
-    output::version(&pref);
+    pref.logo();
+    pref.version();
 
     let tty_path = if args.iter().any(|arg| arg == "-s") {
         port::manual(&pref)
     } else {
         port::auto(&pref)
-    };   
+    };
 
     if let Some(inner_tty_path) = tty_path {
         #[allow(unused_mut)] // Ignore warning from windows compilers
         if let Ok(mut port) = tokio_serial::Serial::from_path(inner_tty_path, &settings) {
-
             #[cfg(unix)]
             port.set_exclusive(false)
                 .expect("Unable to set serial port exclusive to false");
@@ -47,8 +48,8 @@ async fn main() {
             let (sender, mut reciever) = tokio::sync::mpsc::unbounded_channel();
             tokio::spawn(input::receiver(sender));
 
-            output::connected(&pref);
-            output::divider(&pref);
+            pref.println("> Connected \\o/");
+            pref.divider();
 
             let mut buf = Vec::new();
             loop {
@@ -59,7 +60,7 @@ async fn main() {
                         },
                         Ok(_) => {
                             let input = String::from_utf8_lossy(&buf).to_string();
-                            output::print(&input, &pref);
+                            pref.print(&input);
                             buf = Vec::new();
                         },
                         Err(e) => {
@@ -75,10 +76,11 @@ async fn main() {
                     }
                 }
             }
-        } else { // Port handler
+        } else {
+            // Port handler
             error!("Couldn't open serial port!");
         }
     } else {
-        output::no_ports(&pref);
+        pref.no_ports();
     }
 }

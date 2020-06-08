@@ -9,10 +9,6 @@ macro_rules! error {
     };
 }
 
-pub struct Preferences {
-    pub color_enabled: bool,
-}
-
 // Statically compile regex to avoid repetetive compiling
 // Rust Regex can be tested here: https://rustexp.lpil.uk/
 lazy_static::lazy_static! {
@@ -67,61 +63,60 @@ fn parse(s: &str) {
     }
 }
 
-pub fn print(s: &str, p: &Preferences) {
-    if p.color_enabled {
-        parse(&s);
-    } else {
-        print!("{}", s);
-    }
-}
-
-pub fn plug_in(pref: &Preferences) {
-    print("> Plug in your device\r\n", pref);
-}
-
-pub fn no_access(pref: &Preferences) {
-    print("> Couldn't access serial ports\r\n", pref);
-}
-
-pub fn connected(pref: &Preferences) {
-    print("> Connected \\o/\r\n", pref);
-}
-
-pub fn logo() {
-    let c_bytes = include_bytes!("visual/chicken.txt");
-    let logo_str = String::from_utf8_lossy(c_bytes).to_string();
-    println!("{}", logo_str);
-}
-
-pub fn version(pref: &Preferences) {
-    let version = format!(" {} Version {} ", "Huhnitor", env!("CARGO_PKG_VERSION"));
-    let headline = format!("[ {:=^76} ]\r\n", version);
-    print(&headline, pref);
-}
-
-pub fn divider(pref: &Preferences) {
-    let divider = format!("[ {:=^76} ]\r\n", '=');
-    print(&divider, pref);
-}
-
 pub fn clear() {
     print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
 }
 
-pub fn ports(ports: &std::vec::Vec<serialport::SerialPortInfo>, pref: &Preferences) {
-    if ports.len() == 0 {
-        print("> No serial devices found :(\r\n", pref);
-    } else {
-        print("Your available serial ports are:\r\n", pref);
-
-        for (id, port) in ports.iter().enumerate() {
-            let port = format!("[{}] {}\r\n", id, port.port_name);
-            print(&port, pref);
-        }
-    }
+pub struct Preferences {
+    pub color_enabled: bool,
 }
 
-pub fn no_ports(pref: &Preferences) {
-    print("> No serial port found :(", pref);
-    print("Make sure the USB connection works and necessary drivers are installed:\r\nhttps://github.com/SpacehuhnTech/Huhnitor#drivers", pref);
+impl Preferences {
+    pub fn print(&self, s: &str) {
+        if self.color_enabled {
+            parse(&s);
+        } else {
+            print!("{}", s);
+        }
+    }
+
+    pub fn println(&self, s: &str) {
+        self.print(s);
+        println!();
+    }
+
+    pub fn logo(&self) {
+        let c_bytes = include_bytes!("visual/chicken.txt");
+        let logo_str = String::from_utf8_lossy(c_bytes).to_string();
+        println!("{}", logo_str);
+    }
+
+    pub fn version(&self) {
+        let version = format!(" {} Version {} ", "Huhnitor", env!("CARGO_PKG_VERSION"));
+        let headline = format!("[ {:=^76} ]", version);
+        self.println(&headline);
+    }
+
+    pub fn divider(&self) {
+        let divider = format!("[ {:=^76} ]", '=');
+        self.println(&divider);
+    }
+
+    pub fn ports(&self, ports: &std::vec::Vec<serialport::SerialPortInfo>) {
+        if ports.len() == 0 {
+            self.println("> No serial devices found :(");
+        } else {
+            self.println("Your available serial ports are:");
+            for (id, port) in ports.iter().enumerate() {
+                let port = format!("[{}] {}", id, port.port_name);
+                self.println(&port);
+            }
+        }
+    }
+
+    pub fn no_ports(&self) {
+        self.println("> No serial port found :(");
+        self.println("Make sure the USB connection works and necessary drivers are installed:");
+        self.println("https://github.com/SpacehuhnTech/Huhnitor#drivers");
+    }
 }

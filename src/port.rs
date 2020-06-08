@@ -8,7 +8,7 @@ use crate::output;
 pub fn manual(pref: &output::Preferences) -> Option<String> {
     let available = available_ports().ok()?;
 
-    output::ports(&available, pref);
+    pref.ports(&available);
 
     let port = input::read_line();
 
@@ -17,7 +17,7 @@ pub fn manual(pref: &output::Preferences) -> Option<String> {
 
 pub fn auto(pref: &output::Preferences) -> Option<String> {
     if let Ok(original) = available_ports() {
-        output::plug_in(pref);
+        pref.println("> Plug in your device");
 
         for _ in 0..30 {
             if let Ok(paths) = available_ports() {
@@ -30,7 +30,7 @@ pub fn auto(pref: &output::Preferences) -> Option<String> {
             sleep(Duration::from_millis(1000));
         }
     } else {
-        output::no_access(pref);
+        pref.println("> Couldn't access serial ports");
     }
 
     None
