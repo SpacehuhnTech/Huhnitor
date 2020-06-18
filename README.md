@@ -3,30 +3,52 @@
 <p align="center">
   <img alt="Huhnitor Logo" src="img/logo.png" width="200">
   <br>
-  An intergalactic serial monitor for the <a href="https://github.com/SpacehuhnTech/esp8266_deauther">ESP8266 Deauther</a>
+  An intergalactic serial monitor for the <a href="https://github.com/SpacehuhnTech/esp8266_deauther/tree/v3">ESP8266 Deauther v3</a>
   <br>
   <img src="https://github.com/SpacehuhnTech/Huhnitor/workflows/Rust/badge.svg?branch=master" alt="Rust badge">
 </p>
+
+## Disclaimer
+
+**Please note** that while this software can be used for other serial devices and projects, it is designed to be used with the 
+[ESP8266 Deauther Version 3](https://github.com/SpacehuhnTech/esp8266_deauther/tree/v3).  
+
+## Installation 
+
+### Linux
+> Coming Huhn
+
+In the meantime, you can download the latest [release](https://github.com/SpacehuhnTech/Huhnitor/releases) for linux and simply run it.
+
+### Mac
+
+1. Make sure [Homebrew](https://brew.sh/) is installed
+2. Open a terminal and type  
+   `brew tap spacehuhntech/huhnitor`  
+    `brew install huhnitor`
+3. To run it simply type `huhnitor` in a terminal
+
+### Windows
+> Coming Huhn
+
+In the meantime, you can download the latest [release](https://github.com/SpacehuhnTech/Huhnitor/releases) for windows and simply run it.
 
 ## Usage
 
 The Huhnitor is designed to be as easy to use as possible:  
 
-1. Download the latest [release](https://github.com/SpacehuhnTech/Huhnitor/releases) for your operating system
-2. Run it
-3. Plug in your deauther
-4. Have fun using the command line interface of the [ESP8266 Deauther](https://github.com/SpacehuhnTech/esp8266_deauther) :slightly_smiling_face:  
-
-**Please note** that while this software can be used for other serial devices and projects, it is designed to be used with the 
-[ESP8266 Deauther Version 3](https://github.com/SpacehuhnTech/esp8266_deauther/tree/v3).  
+1. Open huhnitor
+2. Plug in your deauther
+3. Have fun using the command line interface of the [ESP8266 Deauther](https://github.com/SpacehuhnTech/esp8266_deauther) :slightly_smiling_face:  
 
 ### Arguments
 
-* `--no-auto` disables the automatic serial port detection.  
-* `--no-color` disables the colored output (recommended for older deauther versions).  
-
-If you wouldn't like to use the automatic method of determining the correct serial port, use the argument `--no-auto` when starting
-The Huhnitor to pick manually.
+| Argument              | Description                    |
+| --------------------- | ------------------------------ |
+| `--help`     or `-h`  | print this help screen         |
+| `--driver`   or `-d`  | open driver page               |
+| `--no-auto`  or `-na` | disable automatic port connect |
+| `--no-color` or `-nc` | disable colored output         |
 
 ## Drivers
 
@@ -45,7 +67,7 @@ Not sure which one to install? A lot of ESP8266 based development boards use a c
 Precompiled binaries can be found at [releases](https://github.com/SpacehuhnTech/Huhnitor/releases).  
 But if you want, you can compile the Huhnitor yourself:  
 
-1. Install Rust using [rustup](https://www.rust-lang.org/tools/install)
+1. Install Rust using [rustup](https://www.rust-lang.org/tools/install) (be sure to pay attention, rustup will tell you install additional compiler tools depending on your OS)
 2. [Download and unzip](https://github.com/SpacehuhnTech/Huhnitor/archive/master.zip) or `git clone https://github.com/SpacehuhnTech/Huhnitor.git` this repository
 3. In the root directory of the repo run `cargo build --release`, your binary will be located in `target/release/`
 
