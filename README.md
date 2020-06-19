@@ -15,23 +15,41 @@
 
 ## Installation 
 
-### Linux
-> Coming Huhn
+### Using released binary (Recommended for Windows)
 
-In the meantime, you can download the latest [release](https://github.com/SpacehuhnTech/Huhnitor/releases) for linux and simply run it.
+1. Go to the [release page](https://github.com/SpacehuhnTech/Huhnitor/releases) and download a binary for your OS from the latest release.
+2. Run it by simply double clicking it or via terminal `sudo ./huhnitor`
+   **Linux & Mac** users will have to make the binary executable first by running `sudo chmod +x huhnitor`
+3. [Optional] Add it to the `PATH` variable for easy use in the terminal
 
-### Mac
+### Using Snap (Recommended for Linux)
+
+1. [Install snap](https://snapcraft.io/docs/installing-snapd) if it doesn't already come with your Linux distribution.
+2. Open a terminal and type  
+   `sudo snap install huhnitor --edge --devmode`  
+3. To start simply run `sudo huhnitor` in a terminal
+
+### Using Homebrew (Recommended for macOS)
 
 1. Make sure [Homebrew](https://brew.sh/) is installed
 2. Open a terminal and type  
    `brew tap spacehuhntech/huhnitor`  
-    `brew install huhnitor`
-3. To run it simply type `huhnitor` in a terminal
+   `brew install huhnitor`  
+   or as a one-liner: `brew tap spacehuhntech/huhnitor && brew install huhnitor`
+3. To start simply run `huhnitor` in a terminal
 
-### Windows
-> Coming Huhn
+**Pro tip**: Homebrew can also be installed on Linux, and the Windows Subsystem for Linux.
 
-In the meantime, you can download the latest [release](https://github.com/SpacehuhnTech/Huhnitor/releases) for windows and simply run it.
+### Compiling it yourself
+
+Precompiled binaries can be found at [releases](https://github.com/SpacehuhnTech/Huhnitor/releases).  
+But if you want, you can compile the Huhnitor yourself:  
+
+1. Install Rust using [rustup](https://www.rust-lang.org/tools/install)  
+   **Linux users** will also need to run `sudo apt install libudev-dev pkg-config`  
+   **Windows users** have to install [Visual C++ Build Tools 2019](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019)  
+2. [Download and unzip](https://github.com/SpacehuhnTech/Huhnitor/archive/master.zip) or `git clone https://github.com/SpacehuhnTech/Huhnitor.git` this repository
+3. In the root directory of the repo run `cargo build --release`, your binary will be located in `target/release/`
 
 ## Usage
 
@@ -40,6 +58,9 @@ The Huhnitor is designed to be as easy to use as possible:
 1. Open huhnitor
 2. Plug in your deauther
 3. Have fun using the command line interface of the [ESP8266 Deauther](https://github.com/SpacehuhnTech/esp8266_deauther) :slightly_smiling_face:  
+
+If the huhnitor has issues connecting to your deauther, try running it as administrator or via `sudo huhnitor`.  
+You can also give a user permission to access the serial ports by running `sudo usermod -a -G dialout <username>`.  
 
 ### Arguments
 
@@ -61,17 +82,6 @@ Depending on the serial chip that is used on the ESP8266 development board you h
 * [FTDI](https://www.ftdichip.com/FTDrivers.htm)
 
 Not sure which one to install? A lot of ESP8266 based development boards use a chip from the CP210x family, try starting there.   
-
-## Compiling
-
-Precompiled binaries can be found at [releases](https://github.com/SpacehuhnTech/Huhnitor/releases).  
-But if you want, you can compile the Huhnitor yourself:  
-
-1. Install Rust using [rustup](https://www.rust-lang.org/tools/install)  
-   **Linux users** also need to install libudev by running `sudo apt install libudev-dev pkg-config`  
-   **Windows users** have to install [Visual C++ Build Tools 2019](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019)  
-2. [Download and unzip](https://github.com/SpacehuhnTech/Huhnitor/archive/master.zip) or `git clone https://github.com/SpacehuhnTech/Huhnitor.git` this repository
-3. In the root directory of the repo run `cargo build --release`, your binary will be located in `target/release/`
 
 ## Credits
 
