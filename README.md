@@ -67,7 +67,9 @@ Not sure which one to install? A lot of ESP8266 based development boards use a c
 Precompiled binaries can be found at [releases](https://github.com/SpacehuhnTech/Huhnitor/releases).  
 But if you want, you can compile the Huhnitor yourself:  
 
-1. Install Rust using [rustup](https://www.rust-lang.org/tools/install) (be sure to pay attention, rustup will tell you install additional compiler tools depending on your OS)
+1. Install Rust using [rustup](https://www.rust-lang.org/tools/install)  
+   **Linux users** also need to install libudev by running `sudo apt install libudev-dev pkg-config`  
+   **Windows users** have to install [Visual C++ Build Tools 2019](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019)  
 2. [Download and unzip](https://github.com/SpacehuhnTech/Huhnitor/archive/master.zip) or `git clone https://github.com/SpacehuhnTech/Huhnitor.git` this repository
 3. In the root directory of the repo run `cargo build --release`, your binary will be located in `target/release/`
 
