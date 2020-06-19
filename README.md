@@ -29,6 +29,8 @@
    `sudo snap install huhnitor --edge --devmode`  
 3. To start simply run `sudo huhnitor` in a terminal
 
+If you get a `huhnitor not found` message, try adding snap to the PATH by running `export PATH="$PATH:/snap/bin"`.  
+
 ### Using Homebrew (Recommended for macOS)
 
 1. Make sure [Homebrew](https://brew.sh/) is installed
