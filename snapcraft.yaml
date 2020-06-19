@@ -7,7 +7,7 @@ description: |
     - Plug in your deauther
     - Have fun using the command line interface of the ESP8266 Deauther
 
-confinement: classic
+confinement: devmode
 base: core18
 
 parts:
