@@ -1,0 +1,24 @@
+name: huhnitor
+version: '1.0.1'
+summary: An intergalactic serial monitor for the ESP8266 Deauther v3
+description: |
+  The Huhnitor is designed to be as easy to use as possible:
+    - Open huhnitor
+    - Plug in your deauther
+    - Have fun using the command line interface of the ESP8266 Deauther
+
+confinement: strict
+base: core18
+
+parts:
+  huhnitor:
+    plugin: rust
+    source: https://github.com/SpacehuhnTech/Huhnitor.git
+    build-packages:
+      - libudev-dev
+      - pkg-config
+
+apps:
+  huhnitor:
+    command: bin/huhnitor
+
