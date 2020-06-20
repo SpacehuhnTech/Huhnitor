@@ -7,7 +7,8 @@ on:
 env:
   NAME: huhnitor
   FILE: huhnitor
-  HOMEBREW: spacehuhn/homebrew-huhnitor
+  HOMEBREW: spacehuhntech/homebrew-huhnitor
+  REPOSITORY: spacehuhntech/Huhnitor
 
 jobs:
 
@@ -101,7 +102,7 @@ jobs:
           curl -X POST https://api.github.com/repos/${{ env.HOMEBREW }}/dispatches \
           -H 'Accept: application/vnd.github.everest-preview+json' \
           -u ${{ secrets.ACCESS_TOKEN }} \
-          --data '{"event_type": "release", "client_payload": { "version": "${{ env.VERSION }}", "hash": "${{ env.CHECKSUM }}", "url": "https://github.com/${{ env.GITHUB_REPOSITORY }}/releases/download/${{ env.VERSION }}/${{ env.FILE }}-${{ env.VERSION }}-mac.tar.gz"}}'
+          --data '{"event_type": "release", "client_payload": { "version": "${{ env.VERSION }}", "hash": "${{ env.CHECKSUM }}", "url": "https://github.com/${{ env.REPOSITORY }}/releases/download/${{ env.VERSION }}/${{ env.FILE }}-${{ env.VERSION }}-mac.tar.gz"}}'
 
   publish-win:
     name: "Publish Windows binary"
