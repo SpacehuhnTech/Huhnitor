@@ -55,7 +55,7 @@ async fn monitor(auto: bool, out: &output::Preferences) {
         timeout: Duration::from_secs(10),
     };
 
-    let mut tty_path = None;
+    let tty_path;
 
     if auto {
         tty_path = port::auto(&mut receiver, out).await;
