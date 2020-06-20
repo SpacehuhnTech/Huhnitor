@@ -3,6 +3,7 @@ use std::env;
 use std::time::Duration;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use handler::handle;
+use ctrlc;
 use tokio::runtime::Runtime;
 
 #[macro_use]
@@ -43,8 +44,10 @@ fn parse_args() -> Arguments {
 
 async fn monitor(auto: bool, out: &output::Preferences) {
     let (sender, mut receiver) = tokio::sync::mpsc::unbounded_channel();
+    let ctrlsender = sender.clone();
     
     std::thread::spawn(|| { input::receiver(sender) });
+    ctrlc::set_handler(move || ctrlsender.send(String::from("stop\n")).expect("couldn't exit")).expect("Couldn't handle ctrl-c");
 
     let settings = tokio_serial::SerialPortSettings {
         baud_rate: 115200,
@@ -93,7 +96,11 @@ async fn monitor(auto: bool, out: &output::Preferences) {
                     },
 
                     Some(text) = receiver.recv() => {
-                        if text.to_uppercase().starts_with("HUHN") {
+                        if text.trim().to_uppercase() == "EXIT" {
+                            break;
+                        } else if text.trim().to_uppercase() == "HUHN" {
+                            output::clear();
+                        } else if text.to_uppercase().starts_with("HUHN") {
                             if port.write(handle(text).as_bytes()).await.is_err() {
                                 error!("Command failed");
                             }

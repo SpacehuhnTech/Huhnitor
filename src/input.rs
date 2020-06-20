@@ -9,9 +9,7 @@ pub fn receiver(sender: UnboundedSender<String>) {
     loop {
         let mut input = String::new();
         if io::stdin().read_line(&mut input).is_ok() {
-            if input.trim() == "clear" {
-                output::clear();
-            } else if sender.send(input).is_err() {
+            if sender.send(input).is_err() {
                 error!("Couldn't report input to main thread!");
             }
         }
