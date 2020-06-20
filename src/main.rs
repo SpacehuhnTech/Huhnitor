@@ -2,11 +2,13 @@ use serialport::prelude::*;
 use std::env;
 use std::time::Duration;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
+use handler::handle;
 use tokio::runtime::Runtime;
 
 #[macro_use]
-mod input;
+mod handler;
 mod output;
+mod input;
 mod port;
 
 struct Arguments {
@@ -90,8 +92,12 @@ async fn monitor(auto: bool, out: &output::Preferences) {
                         }
                     },
 
-                    Some(text_to_send) = receiver.recv() => {
-                        if port.write(text_to_send.as_bytes()).await.is_err() {
+                    Some(text) = receiver.recv() => {
+                        if text.to_uppercase().starts_with("HUHN") {
+                            if port.write(handle(text).as_bytes()).await.is_err() {
+                                error!("Command failed");
+                            }
+                        } else if port.write(text.as_bytes()).await.is_err() {
                             error!("Couldn't send message");
                         }
                     }
