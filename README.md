@@ -64,14 +64,18 @@ The Huhnitor is designed to be as easy to use as possible:
 If the huhnitor has issues connecting to your deauther, try running it as administrator or via `sudo huhnitor`.  
 You can also give a user permission to access the serial ports by running `sudo usermod -a -G dialout <username>`.  
 
+The Huhnitor can run scripts (a series of pre-written commands) if you enter `huhn read [filename]` once you are connected to a deauther. The file paths are relative to your current command line location (not the executable's) and are essentially a series of newline separated deauther commands.
+
+To stop running a command on the deauther, you can hit ctrl + c, which is in theory more convenient and should help to prevent accidental disconnects. This does, however, also mean that you cannot exit the Huhnitor with ctrl + c, therefore once a serial connection has been opened, entering `exit` must be used to exit the Huhnitor.
+
 ### Arguments
 
 | Argument              | Description                    |
 | --------------------- | ------------------------------ |
 | `--help`     or `-h`  | print this help screen         |
 | `--driver`   or `-d`  | open driver page               |
-| `--no-auto`  or `-na` | disable automatic port connect |
-| `--no-color` or `-nc` | disable colored output         |
+| `--no-auto`  or `-a`  | disable automatic port connect |
+| `--no-color` or `-c`  | disable colored output         |
 
 ## Drivers
 
