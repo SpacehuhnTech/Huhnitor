@@ -84,16 +84,18 @@ jobs:
         run: echo ::set-env name=VERSION::${GITHUB_REF/refs\/tags\//}
         
       - name: Archive
-        run: tar -czf target/release/${{ env.NAME }}-mac.tar.gz target/release/${{ env.NAME }}
+        run: |
+          cd target/release
+          tar -czf ${{ env.NAME }}.tar.gz ${{ env.NAME }}
 
       - name: Get the hash
-        run: echo ::set-env name=CHECKSUM::$(shasum -a 256 target/release/${{ env.NAME }}-mac.tar.gz | cut -d ' ' -f 1)
+        run: echo ::set-env name=CHECKSUM::$(shasum -a 256 target/release/${{ env.NAME }}.tar.gz | cut -d ' ' -f 1)
 
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v1-release
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: target/release/${{ env.NAME }}-mac.tar.gz
+          file: target/release/${{ env.NAME }}.tar.gz
           asset_name: ${{ env.FILE }}_${{ env.VERSION }}_mac.tar.gz
           tag: ${{ github.ref }}
 
@@ -102,7 +104,7 @@ jobs:
           curl -X POST https://api.github.com/repos/${{ env.HOMEBREW }}/dispatches \
           -H 'Accept: application/vnd.github.everest-preview+json' \
           -u ${{ secrets.ACCESS_TOKEN }} \
-          --data '{"event_type": "release", "client_payload": { "version": "${{ env.VERSION }}", "hash": "${{ env.CHECKSUM }}", "url": "https://github.com/${{ env.REPOSITORY }}/releases/download/${{ env.VERSION }}/${{ env.FILE }}-${{ env.VERSION }}-mac.tar.gz"}}'
+          --data '{"event_type": "release", "client_payload": { "version": "${{ env.VERSION }}", "hash": "${{ env.CHECKSUM }}", "url": "https://github.com/${{ env.REPOSITORY }}/releases/download/${{ env.VERSION }}/${{ env.FILE }}_${{ env.VERSION }}_mac.tar.gz"}}'
 
   publish-win:
     name: "Publish Windows binary"
