@@ -5,42 +5,13 @@ use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use handler::handle;
 use ctrlc;
 use tokio::runtime::Runtime;
+use structopt::StructOpt;
 
 #[macro_use]
 mod handler;
 mod output;
 mod input;
 mod port;
-
-struct Arguments {
-    help: bool,
-    driver: bool,
-    auto: bool,
-    color: bool,
-}
-
-fn parse_args() -> Arguments {
-    let mut args = Arguments {
-        help: false,
-        driver: false,
-        auto: true,
-        color: true,
-    };
-
-    let words: Vec<String> = env::args().collect();
-
-    for word in words[1..].iter() {
-        match word.as_ref() {
-            "--help" | "-h" => args.help = true,
-            "--driver" | "-d" => args.driver = true,
-            "--no-auto" | "-na" => args.auto = false,
-            "--no-color" | "-nc" => args.color = false,
-            _ => println!("Wrong parameter..."),
-        }
-    }
-
-    args
-}
 
 async fn monitor(auto: bool, out: &output::Preferences) {
     let (sender, mut receiver) = tokio::sync::mpsc::unbounded_channel();
@@ -120,23 +91,37 @@ async fn monitor(auto: bool, out: &output::Preferences) {
     }
 }
 
+#[derive(StructOpt)]
+#[structopt(name = "Huhnitor", about = env!("CARGO_PKG_DESCRIPTION"))]
+struct Opt {
+    /// Open driver page
+    #[structopt(short, long)]
+    driver: bool,
+
+    /// Disable automatic port connection
+    #[structopt(short = "na", long = "no-auto")]
+    auto: bool,
+
+    /// Disable colored output
+    #[structopt(short = "nc", long = "no-color")]
+    color: bool
+}
+
 #[tokio::main]
 async fn main() {
-    let args = parse_args();
+    let args = Opt::from_args();
 
     let out = output::Preferences {
-        color_enabled: args.color,
+        color_enabled: !args.color,
     };
 
     out.logo();
     out.version();
 
-    if args.help {
-        out.help();
-    } else if args.driver {
+    if args.driver {
         out.driver();
     } else {
-        monitor(args.auto, &out).await;
+        monitor(!args.auto, &out).await;
     }
 
     out.goodbye();

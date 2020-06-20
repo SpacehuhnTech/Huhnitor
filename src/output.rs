@@ -128,13 +128,6 @@ impl Preferences {
         self.divider();
     }
 
-    pub fn help(&self) {
-        self.println("--help     or -h  => print this help screen");
-        self.println("--driver   or -d  => open driver page");
-        self.println("--no-auto  or -na => disable automatic port connect");
-        self.println("--no-color or -nc => disable colored output");
-    }
-
     pub fn driver(&self) {
         self.print("Opening \"https://github.com/spacehuhntech/huhnitor#drivers\"...");
 
