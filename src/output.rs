@@ -92,7 +92,7 @@ impl Preferences {
     }
 
     pub fn version(&self) {
-        let version = format!(" {} Version {} ", "Huhnitor", env!("CARGO_PKG_VERSION"));
+        let version = format!(" Huhnitor Version {} ",  env!("CARGO_PKG_VERSION"));
         let headline = format!("[ {:=^76} ]", version);
         self.println(&headline);
     }
