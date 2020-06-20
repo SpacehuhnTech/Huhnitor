@@ -1,11 +1,10 @@
 use std::fs::File;
 use std::io::prelude::*;
 
-#[macro_use]
 use crate::error;
 
 pub fn handle(command: String) -> String {
-    let words = command.split(" ").collect::<Vec<&str>>();
+    let words = command.split(' ').collect::<Vec<&str>>();
     let len = words.len();
     if let Some(key) = words.get(1) {
         match key.to_uppercase().trim().as_ref() {
@@ -25,9 +24,9 @@ pub fn handle(command: String) -> String {
                     println!("Insufficient arguments");
                     println!("Command format: read [filename]");
                 }
-            },
+            }
 
-            _ => error!("Command not found")
+            _ => error!("Command not found"),
         }
     }
 

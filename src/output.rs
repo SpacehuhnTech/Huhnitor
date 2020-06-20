@@ -12,6 +12,7 @@ macro_rules! error {
 // Statically compile regex to avoid repetetive compiling
 // Rust Regex can be tested here: https://rustexp.lpil.uk/
 lazy_static::lazy_static! {
+    #[allow(clippy::trivial_regex)]
     static ref REGSET: RegexSet = RegexSet::new(&[
         r"^# ",                                 // # command
         r"(?m)^\s*(-|=|#)+\s*$",                // ================
@@ -93,7 +94,7 @@ impl Preferences {
     }
 
     pub fn version(&self) {
-        let version = format!(" Huhnitor Version {} ",  env!("CARGO_PKG_VERSION"));
+        let version = format!(" Huhnitor Version {} ", env!("CARGO_PKG_VERSION"));
         let headline = format!("[ {:=^76} ]", version);
         self.println(&headline);
     }
@@ -103,8 +104,8 @@ impl Preferences {
         self.println(&divider);
     }
 
-    pub fn ports(&self, ports: &std::vec::Vec<serialport::SerialPortInfo>) {
-        if ports.len() == 0 {
+    pub fn ports(&self, ports: &[serialport::SerialPortInfo]) {
+        if ports.is_empty() {
             self.hint();
         } else {
             self.println("Available serial ports:");

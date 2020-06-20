@@ -1,24 +1,27 @@
+use handler::handle;
 use serialport::prelude::*;
 use std::env;
 use std::time::Duration;
-use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
-use handler::handle;
-use ctrlc;
-use tokio::runtime::Runtime;
 use structopt::StructOpt;
+use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 
 #[macro_use]
 mod handler;
-mod output;
 mod input;
+mod output;
 mod port;
 
 async fn monitor(auto: bool, out: &output::Preferences) {
     let (sender, mut receiver) = tokio::sync::mpsc::unbounded_channel();
     let ctrlsender = sender.clone();
-    
-    std::thread::spawn(|| { input::receiver(sender) });
-    ctrlc::set_handler(move || ctrlsender.send(String::from("stop\n")).expect("couldn't exit")).expect("Couldn't handle ctrl-c");
+
+    std::thread::spawn(|| input::receiver(sender));
+    ctrlc::set_handler(move || {
+        ctrlsender
+            .send(String::from("stop\n"))
+            .expect("couldn't exit")
+    })
+    .expect("Couldn't handle ctrl-c");
 
     let settings = tokio_serial::SerialPortSettings {
         baud_rate: 115200,
@@ -29,13 +32,11 @@ async fn monitor(auto: bool, out: &output::Preferences) {
         timeout: Duration::from_secs(10),
     };
 
-    let tty_path;
-
-    if auto {
-        tty_path = port::auto(&mut receiver, out).await;
+    let tty_path = if auto {
+        port::auto(&mut receiver, out).await
     } else {
-        tty_path = port::manual(&mut receiver, out).await;
-    }
+        port::manual(&mut receiver, out).await
+    };
 
     if let Some(inner_tty_path) = tty_path {
         #[allow(unused_mut)] // Ignore warning from windows compilers
@@ -99,12 +100,12 @@ struct Opt {
     driver: bool,
 
     /// Disable automatic port connection
-    #[structopt(short = "na", long = "no-auto")]
+    #[structopt(short = "a", long = "no-auto")]
     auto: bool,
 
     /// Disable colored output
-    #[structopt(short = "nc", long = "no-color")]
-    color: bool
+    #[structopt(short = "c", long = "no-color")]
+    color: bool,
 }
 
 #[tokio::main]
