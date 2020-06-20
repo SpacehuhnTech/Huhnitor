@@ -12,7 +12,6 @@ macro_rules! error {
 // Statically compile regex to avoid repetetive compiling
 // Rust Regex can be tested here: https://rustexp.lpil.uk/
 lazy_static::lazy_static! {
-    #[allow(clippy::trivial_regex)]
     static ref REGSET: RegexSet = RegexSet::new(&[
         r"^# ",                                 // # command
         r"(?m)^\s*(-|=|#)+\s*$",                // ================
