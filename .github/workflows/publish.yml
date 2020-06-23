@@ -20,9 +20,9 @@ jobs:
 
       - name: Read version numbers
         run: |
-          echo ::set-env name=APP_VERSION::${GITHUB_REF/refs\/tags\//}
+          echo ::set-env name=RELEASE_VERSION::${GITHUB_REF/refs\/tags\//}
           echo ::set-env name=SNAP_VERSION::$(grep -E "version: '[0-9]?.[0-9]?.[0-9]?'$" snapcraft.yaml | grep -oE "[0-9]?\.[0-9]?\.[0-9]?")
-          echo ::set-env name=RELEASE_VERSION::$(grep -E "version = \"[0-9]?.[0-9]?.[0-9]?\"$" Cargo.toml | grep -oE "[0-9]?\.[0-9]?\.[0-9]?")
+          echo ::set-env name=APP_VERSION::$(grep -E "version = \"[0-9]?.[0-9]?.[0-9]?\"$" Cargo.toml | grep -oE "[0-9]?\.[0-9]?\.[0-9]?")
 
       - name: Cancel build
         if: env.RELEASE_VERSION != env.APP_VERSION || env.RELEASE_VERSION != env.SNAP_VERSION
