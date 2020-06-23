@@ -29,11 +29,11 @@ jobs:
         uses: andymckay/cancel-action@0.2
 
       - name: Fail job
-        if: env.RELEASE_VERSION != env.APP_VERSION
+        if: env.RELEASE_VERSION != env.APP_VERSION || env.RELEASE_VERSION != env.SNAP_VERSION
         run: | 
+          echo "Release tag: ${{ env.RELEASE_VERSION }}"
           echo "Cargo.toml: ${{ env.APP_VERSION }}"
-          echo "Snapcraft version: ${{ env.SNAP_VERSION }}"
-          echo "Release tag version: ${{ env.RELEASE_VERSION }}"
+          echo "snapcraft.yaml: ${{ env.SNAP_VERSION }}"
           exit 1
 
   publish-linux:
