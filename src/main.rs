@@ -70,7 +70,7 @@ async fn monitor(auto: bool, out: &output::Preferences) {
                     Some(text) = receiver.recv() => {
                         if text.trim().to_uppercase() == "EXIT" {
                             break;
-                        } else if text.trim().to_uppercase() == "HUHN" {
+                        } else if text.trim().to_uppercase() == "CLEAR" {
                             output::clear();
                         } else if text.to_uppercase().starts_with("HUHN") {
                             if port.write(handle(text).as_bytes()).await.is_err() {
