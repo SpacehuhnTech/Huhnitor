@@ -18,7 +18,7 @@
 ### Using released binary (Recommended for Windows)
 
 1. Go to the [release page](https://github.com/SpacehuhnTech/Huhnitor/releases) and download a binary for your OS from the latest release.
-2. Run it by simply double clicking it or via terminal `sudo ./huhnitor`
+2. Run it by simply double clicking it or via terminal `./huhnitor` or `sudo ./huhnitor`  
    **Linux & Mac** users will have to make the binary executable first by running `sudo chmod +x huhnitor`
 3. [Optional] Add it to the `PATH` variable for easy use in the terminal
 
