@@ -19,6 +19,7 @@ pub fn handle(command: String) -> String {
                         error!(format!("Couldn't open file: '{}'", words[2].trim()));
                     }
 
+                    if !out.ends_with('\n') { out += "\n" }
                     return out;
                 } else {
                     println!("Insufficient arguments");
