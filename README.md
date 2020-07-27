@@ -31,6 +31,12 @@
 
 If you get a `huhnitor not found` message, try adding snap to the PATH by running `export PATH="$PATH:/snap/bin"`.  
 
+### Using AUR on Arch Linux
+
+1. Open a terminal and type  
+   `yay -S huhnitor`  
+2. To start simply run `sudo huhnitor` in a terminal
+
 ### Using Homebrew (Recommended for macOS)
 
 1. Make sure [Homebrew](https://brew.sh/) is installed
