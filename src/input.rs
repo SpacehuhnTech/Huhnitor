@@ -1,13 +1,31 @@
-use std::io;
 use tokio::sync::mpsc::{UnboundedReceiver, UnboundedSender};
 
 use crate::error;
 
 pub fn receiver(sender: UnboundedSender<String>) {
+    //let mut stdin = termion::async_stdin().keys();
+    let mut rl = rustyline::Editor::<()>::new();
+    rl.bind_sequence(rustyline::KeyPress::Up, rustyline::Cmd::LineUpOrPreviousHistory(1));
+    rl.bind_sequence(rustyline::KeyPress::Down, rustyline::Cmd::LineDownOrNextHistory(1));
+
     loop {
-        let mut input = String::new();
-        if io::stdin().read_line(&mut input).is_ok() && sender.send(input).is_err() {
-            error!("Couldn't report input to main thread!");
+        match rl.readline(">> ") {
+            Ok(line) => {
+                rl.add_history_entry(&line);
+                if sender.send(line.clone()).is_err() {
+                    error!("Couldn't report input to main thread!");
+                }
+
+                if line.trim().to_uppercase() == "EXIT" {
+                    break;
+                }
+            },
+            Err(rustyline::error::ReadlineError::Interrupted) => {
+                sender.send("EXIT".to_string()).expect("Couldn't shut down!");
+                break;
+            }
+            Err(e) => error!(e) 
+            
         }
     }
 }
