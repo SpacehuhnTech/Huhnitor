@@ -11,7 +11,7 @@ mod input;
 mod output;
 mod port;
 
-async fn monitor(cmd_port: Option<String>, auto: bool, out: &output::Preferences) {
+async fn monitor(cmd_port: Option<String>, auto: bool, no_welcome: bool, out: &output::Preferences) {
     let (sender, mut receiver) = tokio::sync::mpsc::unbounded_channel();
 
     std::thread::spawn(|| input::receiver(sender));
@@ -43,6 +43,12 @@ async fn monitor(cmd_port: Option<String>, auto: bool, out: &output::Preferences
             let mut port = BufReader::new(port);
 
             out.connected(&inner_tty_path);
+
+            if !no_welcome {
+                if let Err(_) = port.write("welcome".as_bytes()).await {
+                    out.print("Couldn't send welcome command!");
+                }
+            }
 
             let mut buf = Vec::new();
             loop {
@@ -105,6 +111,10 @@ struct Opt {
     /// Select port
     #[structopt(short, long)]
     port: Option<String>,
+    
+    /// Disable welcome command
+    #[structopt(short = "w", long = "no-welcome")]
+    no_welcome: bool,
 }
 
 #[tokio::main]
@@ -121,7 +131,7 @@ async fn main() {
     if args.driver {
         out.driver();
     } else {
-        monitor(args.port, !args.auto, &out).await;
+        monitor(args.port, !args.auto, !args.auto, &out).await;
     }
 
     out.goodbye();
