@@ -85,6 +85,7 @@ To stop running a command on the deauther, you can hit ctrl + c, which is in the
 | `--driver`   or `-d`  | open driver page               |
 | `--no-auto`  or `-a`  | disable automatic port connect |
 | `--no-color` or `-c`  | disable colored output         |
+| `--port`     or `-p`  | enter port as argument         |
 
 ## Drivers
 
