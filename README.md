@@ -79,13 +79,14 @@ To stop running a command on the deauther, you can hit ctrl + c, which is in the
 
 ### Arguments
 
-| Argument              | Description                    |
-| --------------------- | ------------------------------ |
-| `--help`     or `-h`  | print this help screen         |
-| `--driver`   or `-d`  | open driver page               |
-| `--no-auto`  or `-a`  | disable automatic port connect |
-| `--no-color` or `-c`  | disable colored output         |
-| `--port`     or `-p`  | enter port as argument         |
+| Argument                | Description                    |
+| ----------------------- | ------------------------------ |
+| `--help`       or `-h`  | print this help screen         |
+| `--port`       or `-p`  | enter port as argument         |
+| `--driver`     or `-d`  | open driver page               |
+| `--no-auto`    or `-a`  | disable automatic port connect |
+| `--no-color`   or `-c`  | disable colored output         |
+| `--no-welcome` or `-w`  | disable welcome message        |
 
 ## Drivers
 
