@@ -21,8 +21,7 @@ pub fn receiver(sender: UnboundedSender<String>) {
                 }
             },
             Err(rustyline::error::ReadlineError::Interrupted) => {
-                sender.send("EXIT".to_string()).expect("Couldn't shut down!");
-                break;
+                sender.send("stop\n".to_string()).expect("Couldn't stop!");
             }
             Err(e) => error!(e) 
             
