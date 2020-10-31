@@ -1,9 +1,12 @@
 use tokio::sync::mpsc::{UnboundedReceiver, UnboundedSender};
+use std::collections::VecDeque;
+use std::time::{Instant, Duration};
 
 use crate::error;
 
 pub fn receiver(sender: UnboundedSender<String>) {
-    //let mut stdin = termion::async_stdin().keys();
+    let mut exitspam: VecDeque<Instant> = VecDeque::with_capacity(3);
+
     let mut rl = rustyline::Editor::<()>::new();
     rl.bind_sequence(rustyline::KeyPress::Up, rustyline::Cmd::LineUpOrPreviousHistory(1));
     rl.bind_sequence(rustyline::KeyPress::Down, rustyline::Cmd::LineDownOrNextHistory(1));
@@ -22,6 +25,19 @@ pub fn receiver(sender: UnboundedSender<String>) {
             },
             Err(rustyline::error::ReadlineError::Interrupted) => {
                 sender.send("stop\n".to_string()).expect("Couldn't stop!");
+
+                if exitspam.len() == 3 {
+                    if let Some(time) = exitspam.pop_back() {
+                        if Instant::now() - time <= Duration::new(3, 0) {
+                            sender.send("EXIT".to_string()).expect("Couldn't exit!");
+                            break;
+                        } else {
+                            exitspam.push_front(Instant::now());
+                        }
+                    }
+                } else {
+                    exitspam.push_front(Instant::now());
+                }
             }
             Err(e) => error!(e) 
             
