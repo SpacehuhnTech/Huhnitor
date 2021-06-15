@@ -15,6 +15,9 @@
 
 ## Installation 
 
+**Youtube Tutorial:**  
+[![Huhnitor Installation Video Tutorial](https://img.youtube.com/vi/tSH_wjFreHQ/0.jpg)](https://www.youtube.com/watch?v=tSH_wjFreHQ&t=95s)
+
 ### Using released binary (Recommended for Windows)
 
 1. Go to the [release page](https://github.com/SpacehuhnTech/Huhnitor/releases) and download a binary for your OS from the latest release.
