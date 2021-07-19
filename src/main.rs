@@ -11,7 +11,7 @@ mod input;
 mod output;
 mod port;
 
-async fn monitor(auto: bool, out: &output::Preferences) {
+async fn monitor(auto: bool, no_welcome: bool, out: &output::Preferences) {
     let (sender, mut receiver) = tokio::sync::mpsc::unbounded_channel();
     let ctrlsender = sender.clone();
 
@@ -48,6 +48,12 @@ async fn monitor(auto: bool, out: &output::Preferences) {
             let mut port = BufReader::new(port);
 
             out.connected(&inner_tty_path);
+
+            if !no_welcome {
+                if let Err(_) = port.write("welcome\n".as_bytes()).await {
+                    out.print("Couldn't send welcome command!");
+                }
+            }
 
             let mut buf = Vec::new();
             loop {
@@ -106,6 +112,10 @@ struct Opt {
     /// Disable colored output
     #[structopt(short = "c", long = "no-color")]
     color: bool,
+
+    /// Disable welcome command
+    #[structopt(short = "w", long = "no-welcome")]
+    no_welcome: bool,
 }
 
 #[tokio::main]
@@ -122,7 +132,7 @@ async fn main() {
     if args.driver {
         out.driver();
     } else {
-        monitor(!args.auto, &out).await;
+        monitor(!args.auto, args.no_welcome, &out).await;
     }
 
     out.goodbye();
