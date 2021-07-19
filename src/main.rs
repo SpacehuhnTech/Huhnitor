@@ -11,7 +11,7 @@ mod input;
 mod output;
 mod port;
 
-async fn monitor(auto: bool, out: &output::Preferences) {
+async fn monitor(cmd_port: Option<String>, auto: bool, out: &output::Preferences) {
     let (sender, mut receiver) = tokio::sync::mpsc::unbounded_channel();
     let ctrlsender = sender.clone();
 
@@ -32,7 +32,9 @@ async fn monitor(auto: bool, out: &output::Preferences) {
         timeout: Duration::from_secs(10),
     };
 
-    let tty_path = if auto {
+    let tty_path = if cmd_port.is_some() {
+        cmd_port
+    } else if auto {
         port::auto(&mut receiver, out).await
     } else {
         port::manual(&mut receiver, out).await
@@ -106,6 +108,10 @@ struct Opt {
     /// Disable colored output
     #[structopt(short = "c", long = "no-color")]
     color: bool,
+
+    /// Select port
+    #[structopt(short, long)]
+    port: Option<String>,
 }
 
 #[tokio::main]
@@ -122,7 +128,7 @@ async fn main() {
     if args.driver {
         out.driver();
     } else {
-        monitor(!args.auto, &out).await;
+        monitor(args.port, !args.auto, &out).await;
     }
 
     out.goodbye();
