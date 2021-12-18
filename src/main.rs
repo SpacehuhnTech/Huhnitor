@@ -45,7 +45,7 @@ async fn monitor(cmd_port: Option<String>, auto: bool, no_welcome: bool, out: &o
             out.connected(&inner_tty_path);
 
             if !no_welcome {
-                if let Err(_) = port.write("welcome\n".as_bytes()).await {
+                if let Err(_) = port.write("welcome\r\n".as_bytes()).await {
                     out.print("Couldn't send welcome command!");
                 }
             }
@@ -131,7 +131,7 @@ async fn main() {
     if args.driver {
         out.driver();
     } else {
-        monitor(args.port, !args.auto, !args.auto, &out).await;
+        monitor(args.port, !args.auto, args.no_welcome, &out).await;
     }
 
     out.goodbye();

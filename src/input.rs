@@ -15,7 +15,7 @@ pub fn receiver(sender: UnboundedSender<String>) {
         match rl.readline(">> ") {
             Ok(line) => {
                 rl.add_history_entry(&line);
-                if sender.send(format!("{}\n", line.clone())).is_err() {
+                if sender.send(format!("{}\r\n", line.clone())).is_err() {
                     error!("Couldn't report input to main thread!");
                 }
 
