@@ -42,8 +42,6 @@ async fn monitor(auto: bool, out: &output::Preferences) {
 
             out.connected(&inner_tty_path);
 
-            //let mut stdout = std::io::stdout().into_raw_mode().unwrap();
-
             let mut buf = Vec::new();
             loop {
                 tokio::select! {
