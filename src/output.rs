@@ -13,17 +13,19 @@ macro_rules! error {
 // Rust Regex can be tested here: https://rustexp.lpil.uk/
 lazy_static::lazy_static! {
     static ref REGSET: RegexSet = RegexSet::new(&[
-        r"^# ",                                 // # command
-        r"(?m)^\s*(-|=|#)+\s*$",                // ================
-        r"^\[ =+ ?.* ?=+ \]",                   // [ ===== Headline ====== ]
-        r"^> \w+",                              // > Finished job
-        r"^(ERROR)|(WARNING): ",                // ERROR: something went wrong :(
-        r"^ {0,4}-?\S+.*: +\w+.*",              // -arg value
-        r"^\[.*\]",                             // [default=something]
-        r"(?m)^\S+( \[?-\S*( <\S*>)?\]?)*\s*$", // command [-arg <value>] [-flag]
+        r"^(\x60|\.|:|/|-|\+|o|s|h|d|y| ){50,}",      // ASCII Chicken
+        r"^# ",                                       // # command
+        r"(?m)^\s*(-|=|#)+\s*$",                      // ================
+        r"^\[ =+ ?.* ?=+ \]",                         // [ ===== Headline ====== ]
+        r"^> \w+",                                    // > Finished job
+        r"^(ERROR)|(WARNING): ",                      // ERROR: something went wrong :(
+        r"^.*: +.*",                                  // -arg: value
+        r"^\[.*\]",                                   // [default=something]
+        r"(?m)^\S+( \[?-\S*( <\S*>)?\]?)*\s*$",       // command [-arg <value>] [-flag]
     ]).unwrap();
 
     static ref COLORSET: Vec<(Color, bool)> = vec![
+        (Color::White, false),  // # command
         (Color::White, true),   // # command
         (Color::Blue, false),   // ================
         (Color::Yellow, true),  // [ ===== Headline ====== ]
