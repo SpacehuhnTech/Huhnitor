@@ -118,7 +118,7 @@ jobs:
           toolchain: stable
       
       - name: Read version number
-        uses: olegtarasov/get-tag@v2
+        uses: olegtarasov/get-tag@v2.1
       - name: Build
         run: cargo build --release
 
