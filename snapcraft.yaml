@@ -1,5 +1,5 @@
 name: huhnitor
-version: '1.1.2'
+version: '2.0.0'
 summary: An intergalactic serial monitor for the ESP8266 Deauther v3
 description: |
   The Huhnitor is designed to be as easy to use as possible:
