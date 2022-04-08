@@ -8,6 +8,13 @@
   <img src="https://github.com/SpacehuhnTech/Huhnitor/workflows/Rust/badge.svg?branch=master" alt="Rust badge">
 </p>
 
+## New New New ✨
+Check out [serial.huhn.me](https://serial.huhn.me) for a web based serial monitor.  
+A great alternative that works with all Arduino projects and doesn't need to be installed. 
+You just need a compatible browser, like Chrome for desktop.
+
+But no worries, it doesn't replace this project. Huhnitor remains to be our terminal based serial monitor!
+
 ## Disclaimer
 
 **Please note** that while this software can be used for other serial devices and projects, it is designed to be used with the 
