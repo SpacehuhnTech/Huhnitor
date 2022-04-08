@@ -5,7 +5,7 @@ use termcolor::{Color, ColorChoice, ColorSpec, StandardStream, WriteColor};
 #[macro_export]
 macro_rules! error {
     ($expression:expr) => {
-        eprintln!("[Error] {}", $expression);
+        eprintln!("[Error] {}", $expression)
     };
 }
 
