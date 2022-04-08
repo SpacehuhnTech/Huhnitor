@@ -20,9 +20,9 @@ jobs:
 
       - name: Read version numbers
         run: |
-          echo ::set-env name=RELEASE_VERSION::${GITHUB_REF/refs\/tags\//}
-          echo ::set-env name=SNAP_VERSION::$(grep -E "version: '[0-9]?.[0-9]?.[0-9]?'$" snapcraft.yaml | grep -oE "[0-9]?\.[0-9]?\.[0-9]?")
-          echo ::set-env name=APP_VERSION::$(grep -E "version = \"[0-9]?.[0-9]?.[0-9]?\"$" Cargo.toml | grep -oE "[0-9]?\.[0-9]?\.[0-9]?")
+          echo "RELEASE_VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
+          echo "SNAP_VERSION=$(grep -E "version: '[0-9]?.[0-9]?.[0-9]?'$" snapcraft.yaml | grep -oE "[0-9]?\.[0-9]?\.[0-9]?")" >> $GITHUB_ENV
+          echo "APP_VERSION=$(grep -E "version = \"[0-9]?.[0-9]?.[0-9]?\"$" Cargo.toml | grep -oE "[0-9]?\.[0-9]?\.[0-9]?")" >> $GITHUB_ENV
 
       - name: Cancel build
         if: env.RELEASE_VERSION != env.APP_VERSION || env.RELEASE_VERSION != env.SNAP_VERSION
@@ -48,8 +48,8 @@ jobs:
           toolchain: stable
 
       - name: Read version number
-        run: echo ::set-env name=VERSION::${GITHUB_REF/refs\/tags\//}
-
+        run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
+        
       - name: Update APT
         run: sudo apt-get update
       - name: Install libdev
@@ -81,7 +81,7 @@ jobs:
         run: cargo build --release
 
       - name: Read version number
-        run: echo ::set-env name=VERSION::${GITHUB_REF/refs\/tags\//}
+        run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
         
       - name: Archive
         run: |
@@ -89,7 +89,7 @@ jobs:
           tar -czf ${{ env.NAME }}.tar.gz ${{ env.NAME }}
 
       - name: Get the hash
-        run: echo ::set-env name=CHECKSUM::$(shasum -a 256 target/release/${{ env.NAME }}.tar.gz | cut -d ' ' -f 1)
+        run: echo "CHECKSUM=$(shasum -a 256 target/release/${{ env.NAME }}.tar.gz | cut -d ' ' -f 1)" >> $GITHUB_ENV
 
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v1-release
