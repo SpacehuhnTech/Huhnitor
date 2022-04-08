@@ -67,7 +67,7 @@ But if you want, you can compile the Huhnitor yourself:
    **Linux users** will also need to run `sudo apt install libudev-dev pkg-config`  
    **Windows users** have to install [Visual C++ Build Tools 2019](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019)  
 2. [Download and unzip](https://github.com/SpacehuhnTech/Huhnitor/archive/master.zip) or `git clone https://github.com/SpacehuhnTech/Huhnitor.git` this repository
-3. In the root directory of the repo run `cargo build --release`, your binary will be located in `target/release/`
+3. In the root directory of the repo run `cargo build --release`, your binary will be located in `target/release/` (you can use `cargo run` to start Huhnitor without compiling a binary)
 
 ## Usage
 
