@@ -1,28 +1,38 @@
-## Huhnitor
+# Huhnitor
 
-![uhnitor Logo](https://raw.githubusercontent.com/SpacehuhnTech/Huhnitor/main/img/logo.png)
+<p align="center">
+  <img alt="Huhnitor Logo" src="https://raw.githubusercontent.com/SpacehuhnTech/Huhnitor/main/img/logo.png" width="200">
+  <br>
+  An intergalactic serial monitor for the <a href="https://github.com/SpacehuhnTech/esp8266_deauther/tree/v3">ESP8266 Deauther v3</a>
+  <br>
+  <img src="https://github.com/SpacehuhnTech/Huhnitor/workflows/Rust/badge.svg?branch=master" alt="Rust badge">
+</p>
 
-An intergalactic serial monitor for the [ESP8266 Deauther v3](https://github.com/SpacehuhnTech/esp8266_deauther/tree/v3)  
+## New New New ✨
+Check out [serial.huhn.me](https://serial.huhn.me) for a web based serial monitor.  
+A great alternative that works with all Arduino projects and doesn't need to be installed. 
+You just need a compatible browser, like Chrome for desktop.
 
-![Rust badge](https://github.com/SpacehuhnTech/Huhnitor/workflows/Rust/badge.svg?branch=master)
+But no worries, it doesn't replace this project. Huhnitor remains to be our terminal based serial monitor!
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
-### Disclaimer
+## Disclaimer
 
 **Please note** that while this software can be used for other serial devices and projects, it is designed to be used with the 
 [ESP8266 Deauther Version 3](https://github.com/SpacehuhnTech/esp8266_deauther/tree/v3).  
 
-### Installation 
+## Installation 
 
-#### Using released binary (Recommended for Windows)
+**Youtube Tutorial:**  
+[![Huhnitor Installation Video Tutorial](https://img.youtube.com/vi/tSH_wjFreHQ/0.jpg)](https://www.youtube.com/watch?v=tSH_wjFreHQ&t=95s)
+
+### Using released binary (Recommended for Windows)
 
 1. Go to the [release page](https://github.com/SpacehuhnTech/Huhnitor/releases) and download a binary for your OS from the latest release.
-2. Run it by simply double clicking it or via terminal `sudo ./huhnitor`
+2. Run it by simply double clicking it or via terminal `./huhnitor` or `sudo ./huhnitor`  
    **Linux & Mac** users will have to make the binary executable first by running `sudo chmod +x huhnitor`
 3. [Optional] Add it to the `PATH` variable for easy use in the terminal
 
-#### Using Snap (Recommended for Linux)
+### Using Snap (Recommended for Linux)
 
 1. [Install snap](https://snapcraft.io/docs/installing-snapd) if it doesn't already come with your Linux distribution.
 2. Open a terminal and type  
@@ -31,7 +41,13 @@ Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://j
 
 If you get a `huhnitor not found` message, try adding snap to the PATH by running `export PATH="$PATH:/snap/bin"`.  
 
-#### Using Homebrew (Recommended for macOS)
+### Using AUR on Arch Linux
+
+1. Open a terminal and type  
+   `yay -S huhnitor`  
+2. To start simply run `sudo huhnitor` in a terminal
+
+### Using Homebrew (Recommended for macOS)
 
 1. Make sure [Homebrew](https://brew.sh/) is installed
 2. Open a terminal and type  
@@ -42,7 +58,7 @@ If you get a `huhnitor not found` message, try adding snap to the PATH by runnin
 
 **Pro tip**: Homebrew can also be installed on Linux, and the Windows Subsystem for Linux.
 
-#### Compiling it yourself
+### Compiling it yourself
 
 Precompiled binaries can be found at [releases](https://github.com/SpacehuhnTech/Huhnitor/releases).  
 But if you want, you can compile the Huhnitor yourself:  
@@ -51,9 +67,9 @@ But if you want, you can compile the Huhnitor yourself:
    **Linux users** will also need to run `sudo apt install libudev-dev pkg-config`  
    **Windows users** have to install [Visual C++ Build Tools 2019](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019)  
 2. [Download and unzip](https://github.com/SpacehuhnTech/Huhnitor/archive/master.zip) or `git clone https://github.com/SpacehuhnTech/Huhnitor.git` this repository
-3. In the root directory of the repo run `cargo build --release`, your binary will be located in `target/release/`
+3. In the root directory of the repo run `cargo build --release`, your binary will be located in `target/release/` (you can use `cargo run` to start Huhnitor without compiling a binary)
 
-### Usage
+## Usage
 
 The Huhnitor is designed to be as easy to use as possible:  
 
@@ -68,16 +84,18 @@ The Huhnitor can run scripts (a series of pre-written commands) if you enter `hu
 
 To stop running a command on the deauther, you can hit ctrl + c, which is in theory more convenient and should help to prevent accidental disconnects. This does, however, also mean that you cannot exit the Huhnitor with ctrl + c, therefore once a serial connection has been opened, entering `exit` must be used to exit the Huhnitor.
 
-#### Arguments
+### Arguments
 
-| Argument              | Description                    |
-| --------------------- | ------------------------------ |
-| `--help`     or `-h`  | print this help screen         |
-| `--driver`   or `-d`  | open driver page               |
-| `--no-auto`  or `-a`  | disable automatic port connect |
-| `--no-color` or `-c`  | disable colored output         |
+| Argument                | Description                    |
+| ----------------------- | ------------------------------ |
+| `--help`       or `-h`  | print this help screen         |
+| `--port`       or `-p`  | enter port as argument         |
+| `--driver`     or `-d`  | open driver page               |
+| `--no-auto`    or `-a`  | disable automatic port connect |
+| `--no-color`   or `-c`  | disable colored output         |
+| `--no-welcome` or `-w`  | disable welcome message        |
 
-### Drivers
+## Drivers
 
 Your deauther is not detected when plugged in?  
 **Make sure the USB connection is working. Some cables can only charge but not transmit data.**  
@@ -89,11 +107,11 @@ Depending on the serial chip that is used on the ESP8266 development board you h
 
 Not sure which one to install? A lot of ESP8266 based development boards use a chip from the CP210x family, try starting there.   
 
-### Credits
+## Credits
 
-Made with :heart: by [Jamz](https://github.com/the-Jamz)  
+Made with :heart: by [Jamz](https://github.com/the-Jamz) with help from [Selicre](https://selic.re)<br>
 in cooperation with [Spacehuhn Technologies](https://github.com/SpacehuhnTech/)
 
-### License
+## License
 
 This software is licensed under the MIT License. See the [license file](LICENSE) for details.  
