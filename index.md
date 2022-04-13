@@ -115,3 +115,5 @@ in cooperation with [Spacehuhn Technologies](https://github.com/SpacehuhnTech/)
 ## License
 
 This software is licensed under the MIT License. See the [license file](LICENSE) for details.  
+
+<script defer data-domain="huhnitor.com" src="https://plausible.io/js/plausible.js"></script>
